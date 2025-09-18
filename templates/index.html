@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Propeptides{% endblock %}
+
+{% block content %}
+    <section class="hero bg-gradient-to-r from-primary to-secondary text-white py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-5xl font-bold mb-6">Welcome to Propeptides</h1>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">Leading the future of peptide research and development</p>
+            <a href="#services" class="btn btn-secondary btn-lg">Learn More</a>
+        </div>
+    </section>
+
+    <section id="about" class="py-20 bg-base-100">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-4xl font-bold mb-8 text-primary">About Us</h2>
+                <p class="text-lg leading-relaxed text-base-content">Propeptides is a cutting-edge biotechnology company specializing in peptide synthesis, research, and development. We are committed to advancing scientific discovery and delivering innovative solutions to the pharmaceutical and research communities.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="py-20 bg-base-200">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-12 text-primary">Our Services</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title text-primary">Peptide Synthesis</h3>
+                        <p class="text-base-content">Custom peptide synthesis with high purity and fast turnaround times.</p>
+                    </div>
+                </div>
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title text-primary">Research & Development</h3>
+                        <p class="text-base-content">Innovative peptide research for therapeutic applications.</p>
+                    </div>
+                </div>
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title text-primary">Quality Control</h3>
+                        <p class="text-base-content">Rigorous testing and quality assurance for all peptide products.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-20 bg-primary text-primary-content">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold mb-8">Contact Us</h2>
+            <p class="text-lg mb-8 max-w-2xl mx-auto">Have questions about our services? Get in touch with our team of experts.</p>
+            <a href="mailto:info@propeptides.com" class="btn btn-secondary btn-lg">Send Email</a>
+        </div>
+    </section>
+{% endblock %}
