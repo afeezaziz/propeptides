@@ -10,4 +10,5 @@ dependencies = [
     "gunicorn>=23.0.0",
     "authlib>=1.6.4",
     "python-dotenv>=1.1.1",
+    "requests>=2.32.5",
 ]
