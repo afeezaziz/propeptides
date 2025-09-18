@@ -5,6 +5,7 @@ from auth import google_auth, login_manager, create_or_update_user
 from dotenv import load_dotenv
 import os
 import secrets
+import pymysql
 
 # Load environment variables
 load_dotenv()
