@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Propeptides{% endblock %}
+
+{% block content %}
+    <!-- Dashboard Header -->
+    <section class="bg-gradient-to-br from-brand-600 to-brand-700 text-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-bold mb-2">Welcome back, {{ user.name }}!</h1>
+                    <p class="text-brand-100">Manage your account and view your research peptide orders</p>
+                </div>
+                <div class="hidden md:block">
+                    {% if user.picture %}
+                        <img src="{{ user.picture }}" alt="Profile" class="w-20 h-20 rounded-full border-4 border-white">
+                    {% else %}
+                        <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center border-4 border-white">
+                            <i data-lucide="user" class="w-10 h-10 text-white"></i>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Content -->
+    <section class="py-12 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Main Content -->
+                <div class="lg:col-span-2 space-y-8">
+                    <!-- Recent Orders -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <h2 class="text-2xl font-bold mb-6 text-gray-900">Recent Orders</h2>
+                        <div class="space-y-4">
+                            <!-- Order 1 -->
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-brand-100 rounded-lg flex items-center justify-center">
+                                        <i data-lucide="package" class="w-6 h-6 text-brand-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-900">Order #12345</h3>
+                                        <p class="text-sm text-gray-600">BPC-157, TB-500 • $184.98</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        Delivered
+                                    </span>
+                                    <p class="text-xs text-gray-500 mt-1">Jan 10, 2024</p>
+                                </div>
+                            </div>
+
+                            <!-- Order 2 -->
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-brand-100 rounded-lg flex items-center justify-center">
+                                        <i data-lucide="package" class="w-6 h-6 text-brand-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-900">Order #12346</h3>
+                                        <p class="text-sm text-gray-600">GHK-Cu • $124.99</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        In Transit
+                                    </span>
+                                    <p class="text-xs text-gray-500 mt-1">Jan 15, 2024</p>
+                                </div>
+                            </div>
+
+                            <!-- No orders message -->
+                            <div class="text-center py-8">
+                                <i data-lucide="shopping-cart" class="w-12 h-12 text-gray-400 mx-auto mb-4"></i>
+                                <p class="text-gray-600">You haven't placed any orders yet.</p>
+                                <a href="#products" class="text-brand-600 hover:text-brand-700 font-medium mt-2 inline-block">
+                                    Start Shopping
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Saved Products -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <h2 class="text-2xl font-bold mb-6 text-gray-900">Saved Products</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Product 1 -->
+                            <div class="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg">
+                                <img src="https://via.placeholder.com/60x60/3b82f6/ffffff?text=BPC-157" alt="BPC-157" class="w-12 h-12 rounded-lg object-cover">
+                                <div class="flex-1">
+                                    <h3 class="font-medium text-gray-900">BPC-157</h3>
+                                    <p class="text-sm text-gray-600">Body Protection Compound</p>
+                                    <p class="text-brand-600 font-semibold">$89.99</p>
+                                </div>
+                            </div>
+
+                            <!-- Product 2 -->
+                            <div class="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg">
+                                <img src="https://via.placeholder.com/60x60/2563eb/ffffff?text=TB-500" alt="TB-500" class="w-12 h-12 rounded-lg object-cover">
+                                <div class="flex-1">
+                                    <h3 class="font-medium text-gray-900">TB-500</h3>
+                                    <p class="text-sm text-gray-600">Thymosin Beta-4</p>
+                                    <p class="text-brand-600 font-semibold">$94.99</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="space-y-8">
+                    <!-- Profile Card -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="text-center mb-6">
+                            {% if user.picture %}
+                                <img src="{{ user.picture }}" alt="Profile" class="w-20 h-20 rounded-full mx-auto mb-4">
+                            {% else %}
+                                <div class="w-20 h-20 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i data-lucide="user" class="w-10 h-10 text-brand-600"></i>
+                                </div>
+                            {% endif %}
+                            <h3 class="text-xl font-bold text-gray-900">{{ user.name }}</h3>
+                            <p class="text-gray-600">{{ user.email }}</p>
+                        </div>
+                        <div class="space-y-3">
+                            <a href="#" class="flex items-center space-x-3 text-gray-700 hover:text-brand-600 transition-colors">
+                                <i data-lucide="user" class="w-5 h-5"></i>
+                                <span>Edit Profile</span>
+                            </a>
+                            <a href="#" class="flex items-center space-x-3 text-gray-700 hover:text-brand-600 transition-colors">
+                                <i data-lucide="map-pin" class="w-5 h-5"></i>
+                                <span>Shipping Address</span>
+                            </a>
+                            <a href="#" class="flex items-center space-x-3 text-gray-700 hover:text-brand-600 transition-colors">
+                                <i data-lucide="credit-card" class="w-5 h-5"></i>
+                                <span>Payment Methods</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <h3 class="text-lg font-bold mb-4 text-gray-900">Quick Stats</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <i data-lucide="shopping-bag" class="w-5 h-5 text-gray-400"></i>
+                                    <span class="text-gray-600">Total Orders</span>
+                                </div>
+                                <span class="font-semibold text-gray-900">2</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <i data-lucide="heart" class="w-5 h-5 text-gray-400"></i>
+                                    <span class="text-gray-600">Saved Items</span>
+                                </div>
+                                <span class="font-semibold text-gray-900">3</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <i data-lucide="calendar" class="w-5 h-5 text-gray-400"></i>
+                                    <span class="text-gray-600">Member Since</span>
+                                </div>
+                                <span class="font-semibold text-gray-900">Jan 2024</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Support -->
+                    <div class="bg-brand-50 rounded-xl p-6">
+                        <h3 class="text-lg font-bold mb-3 text-brand-900">Need Help?</h3>
+                        <p class="text-brand-800 mb-4">Our peptide specialists are here to assist you with any questions about your orders or research needs.</p>
+                        <a href="#contact" class="inline-flex items-center space-x-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                            <i data-lucide="message-circle" class="w-4 h-4"></i>
+                            <span>Contact Support</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
