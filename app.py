@@ -2,7 +2,6 @@ from flask import Flask, render_template, redirect, url_for, request, flash, jso
 from flask_login import login_required, current_user, login_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from auth import google_auth, login_manager, create_or_update_user
-from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 import os
 import secrets
