@@ -56,7 +56,7 @@ def login():
 @app.route('/authorize')
 def authorize():
     token = google.authorize_access_token()
-    user_info = google.parse_id_token(token)
+    user_info = google.userinfo()
 
     # Store user info in session
     session['user'] = user_info
