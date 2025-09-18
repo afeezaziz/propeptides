@@ -3,6 +3,7 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 import os
+import secrets
 
 # Load environment variables
 load_dotenv()
@@ -10,7 +11,7 @@ load_dotenv()
 app = Flask(__name__)
 
 # Configure Flask app
-app.secret_key = os.getenv('SECRET_KEY')
+app.secret_key = os.getenv('SECRET_KEY', secrets.token_hex(32))
 app.config['SESSION_COOKIE_SECURE'] = True
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
@@ -54,11 +55,22 @@ def index():
 
 @app.route('/login')
 def login():
+    # Generate and store state in session
+    state = secrets.token_urlsafe(16)
+    session['oauth_state'] = state
+
     redirect_uri = url_for('authorize', _external=True, _scheme='https')
-    return google.authorize_redirect(redirect_uri)
+    return google.authorize_redirect(redirect_uri, state=state)
 
 @app.route('/authorize')
 def authorize():
+    # Verify state parameter to prevent CSRF
+    returned_state = request.args.get('state')
+    stored_state = session.pop('oauth_state', None)
+
+    if not returned_state or returned_state != stored_state:
+        return "Invalid state parameter", 400
+
     token = google.authorize_access_token()
     user_info = google.userinfo()
 
