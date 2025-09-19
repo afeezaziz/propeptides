@@ -143,8 +143,6 @@ class DosageLog(db.Model):
     notes = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    cycle = db.relationship('PeptideCycle')
-
 class ProgressEntry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     cycle_id = db.Column(db.Integer, db.ForeignKey('peptide_cycle.id'), nullable=False)
@@ -157,5 +155,3 @@ class ProgressEntry(db.Model):
     mood = db.Column(db.String(50), nullable=True)  # excellent, good, average, poor
     side_effects = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-    cycle = db.relationship('PeptideCycle')
