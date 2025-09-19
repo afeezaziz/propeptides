@@ -52,7 +52,9 @@ def generate_order_number():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    # Fetch latest published posts for homepage blog section
+    latest_posts = Post.query.filter_by(status='published').order_by(Post.created_at.desc()).limit(3).all()
+    return render_template('index.html', posts=latest_posts)
 
 @app.route('/login')
 def login():

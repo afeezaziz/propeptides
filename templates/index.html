@@ -347,6 +347,45 @@
                 <p class="text-lg text-gray-600 max-w-2xl mx-auto">Stay updated with the latest peptide research, scientific insights, and industry trends</p>
             </div>
 
+            {% if posts and posts|length > 0 %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for post in posts %}
+                <article class="bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
+                    <div class="relative overflow-hidden">
+                        {% if post.featured_image %}
+                            <img src="{{ post.featured_image }}" alt="{{ post.title }}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+                        {% else %}
+                            <img src="https://via.placeholder.com/400x250/3b82f6/ffffff?text=Propeptides" alt="{{ post.title }}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+                        {% endif %}
+                        <div class="absolute top-3 left-3">
+                            <span class="bg-brand-600 text-white px-3 py-1 rounded-full text-xs font-semibold">Blog</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center text-sm text-gray-500 mb-3">
+                            {% if post.created_at %}
+                                <time datetime="{{ post.created_at.strftime('%Y-%m-%d') }}">{{ post.created_at.strftime('%B %d, %Y') }}</time>
+                                <span class="mx-2">•</span>
+                            {% endif %}
+                            <span>{{ post.content|reading_time }}</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-gray-900 group-hover:text-brand-600 transition-colors">
+                            <a href="{{ url_for('post_detail', slug=post.slug) }}">{{ post.title }}</a>
+                        </h3>
+                        <p class="text-gray-600 mb-4 leading-relaxed">
+                            {{ post.excerpt or (post.content|truncate(160)) }}
+                        </p>
+                        <a href="{{ url_for('post_detail', slug=post.slug) }}" class="inline-flex items-center text-brand-600 hover:text-brand-700 font-medium transition-colors">
+                            Read More
+                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+            {% else %}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Blog Post 1 -->
                 <article class="bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
@@ -368,7 +407,7 @@
                         <p class="text-gray-600 mb-4 leading-relaxed">
                             Explore the fascinating mechanisms that make BPC-157 one of the most studied peptides for tissue repair and regeneration in modern research.
                         </p>
-                        <a href="#" class="inline-flex items-center text-brand-600 hover:text-brand-700 font-medium transition-colors">
+                        <a href="{{ url_for('posts') }}" class="inline-flex items-center text-brand-600 hover:text-brand-700 font-medium transition-colors">
                             Read More
                             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -397,7 +436,7 @@
                         <p class="text-gray-600 mb-4 leading-relaxed">
                             Discover how Thymosin Beta-4 is revolutionizing approaches to recovery, inflammation reduction, and tissue repair in sports medicine.
                         </p>
-                        <a href="#" class="inline-flex items-center text-brand-600 hover:text-brand-700 font-medium transition-colors">
+                        <a href="{{ url_for('posts') }}" class="inline-flex items-center text-brand-600 hover:text-brand-700 font-medium transition-colors">
                             Read More
                             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -426,7 +465,7 @@
                         <p class="text-gray-600 mb-4 leading-relaxed">
                             Essential guidelines for researchers on identifying high-quality peptides, understanding purity standards, and verifying supplier credentials.
                         </p>
-                        <a href="#" class="inline-flex items-center text-brand-600 hover:text-brand-700 font-medium transition-colors">
+                        <a href="{{ url_for('posts') }}" class="inline-flex items-center text-brand-600 hover:text-brand-700 font-medium transition-colors">
                             Read More
                             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -435,9 +474,10 @@
                     </div>
                 </article>
             </div>
+            {% endif %}
 
             <div class="text-center mt-12">
-                <a href="#" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-brand-600 hover:bg-brand-700 transition-colors">
+                <a href="{{ url_for('posts') }}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-brand-600 hover:bg-brand-700 transition-colors">
                     View All Articles
                     <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
