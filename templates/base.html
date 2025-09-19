@@ -44,6 +44,15 @@
     {% block head %}{% endblock %}
 </head>
 <body class="bg-gray-50">
+    <!-- Announcement Bar -->
+    <div id="announcement-bar" class="bg-brand-600 text-white text-sm">
+        <div class="container mx-auto px-4 py-2 flex items-center justify-between">
+            <p class="truncate">Free shipping on orders over $99. New customers get 10% off with code WELCOME10.</p>
+            <button id="announcement-close" class="ml-4 p-1 rounded hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-white" aria-label="Dismiss announcement">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </div>
     <!-- Header -->
     <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <nav class="container mx-auto px-4">
@@ -62,10 +71,10 @@
 
                 <!-- Desktop Navigation -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="{{ url_for('peptides') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Peptides</a>
-                    <a href="{{ url_for('posts') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Blog</a>
-                    <a href="{{ url_for('calculator') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Calculator</a>
-                    <a href="{{ url_for('tracker') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Tracker</a>
+                    <a href="{{ url_for('peptides') }}" class="font-medium transition-colors {{ 'text-brand-700' if request.endpoint in ['peptides', 'peptide_detail'] else 'text-gray-700 hover:text-brand-600' }}" {% if request.endpoint in ['peptides', 'peptide_detail'] %}aria-current="page"{% endif %}>Peptides</a>
+                    <a href="{{ url_for('posts') }}" class="font-medium transition-colors {{ 'text-brand-700' if request.endpoint in ['posts', 'post_detail'] else 'text-gray-700 hover:text-brand-600' }}" {% if request.endpoint in ['posts', 'post_detail'] %}aria-current="page"{% endif %}>Blog</a>
+                    <a href="{{ url_for('calculator') }}" class="font-medium transition-colors {{ 'text-brand-700' if request.endpoint == 'calculator' else 'text-gray-700 hover:text-brand-600' }}" {% if request.endpoint == 'calculator' %}aria-current="page"{% endif %}>Calculator</a>
+                    <a href="{{ url_for('tracker') }}" class="font-medium transition-colors {{ 'text-brand-700' if request.endpoint in ['tracker', 'log_dosage', 'add_progress'] else 'text-gray-700 hover:text-brand-600' }}" {% if request.endpoint in ['tracker', 'log_dosage', 'add_progress'] %}aria-current="page"{% endif %}>Tracker</a>
                 </div>
 
                 <!-- Desktop CTA -->
@@ -73,8 +82,8 @@
                     <a href="#products" class="text-brand-600 hover:text-brand-700 font-medium">Shop</a>
                     {% if current_user.is_authenticated %}
                         <div class="flex items-center space-x-3">
-                            <div class="relative group">
-                                <button class="flex items-center space-x-2 text-gray-700 hover:text-brand-600 transition-colors">
+                            <div class="relative">
+                                <button id="profile-menu-button" class="flex items-center space-x-2 text-gray-700 hover:text-brand-600 transition-colors" aria-haspopup="true" aria-expanded="false" aria-controls="profile-menu">
                                     {% if current_user.picture %}
                                         <img src="{{ current_user.picture }}" alt="Profile" class="w-8 h-8 rounded-full">
                                     {% else %}
@@ -85,11 +94,11 @@
                                     <span class="text-sm font-medium">{{ current_user.name }}</span>
                                     <i data-lucide="chevron-down" class="w-4 h-4"></i>
                                 </button>
-                                <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 hidden group-hover:block">
-                                    <a href="{{ url_for('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <div id="profile-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 hidden" role="menu" aria-labelledby="profile-menu-button">
+                                    <a href="{{ url_for('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
                                         <i data-lucide="user" class="w-4 h-4 inline mr-2"></i> Dashboard
                                     </a>
-                                    <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
                                         <i data-lucide="log-out" class="w-4 h-4 inline mr-2"></i> Logout
                                     </a>
                                 </div>
@@ -105,7 +114,7 @@
 
                 <!-- Mobile menu button -->
                 <div class="md:hidden">
-                    <button type="button" class="mobile-menu-button text-gray-700 hover:text-brand-600 focus:outline-none focus:text-brand-600" onclick="toggleMobileMenu()">
+                    <button type="button" class="mobile-menu-button text-gray-700 hover:text-brand-600 focus:outline-none focus:text-brand-600" onclick="toggleMobileMenu()" aria-controls="mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                         </svg>
@@ -114,7 +123,7 @@
             </div>
 
             <!-- Mobile menu -->
-            <div class="mobile-menu hidden md:hidden py-4 border-t border-gray-200">
+            <div id="mobile-menu" class="mobile-menu hidden md:hidden py-4 border-t border-gray-200" role="navigation" aria-label="Mobile">
                 <div class="flex flex-col space-y-3">
                     <a href="{{ url_for('peptides') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Peptides</a>
                     <a href="{{ url_for('posts') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Blog</a>
@@ -190,7 +199,7 @@
                     <a href="{{ url_for('peptides') }}" class="text-gray-400 hover:text-brand-400 transition-colors">Peptides</a>
                     <a href="{{ url_for('posts') }}" class="text-gray-400 hover:text-brand-400 transition-colors">Blog</a>
                     <a href="{{ url_for('calculator') }}" class="text-gray-400 hover:text-brand-400 transition-colors">Calculator</a>
-                    <a href="#" class="text-gray-400 hover:text-brand-400 transition-colors">Tracker</a>
+                    <a href="{{ url_for('tracker') }}" class="text-gray-400 hover:text-brand-400 transition-colors">Tracker</a>
                 </div>
 
                 <!-- Contact Info -->
@@ -206,9 +215,24 @@
                 </div>
             </div>
 
+            <!-- Newsletter -->
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-sm font-semibold text-white">Stay in the loop</h3>
+                    <p class="mt-2 text-sm text-gray-400">Get product updates and research tidbits straight to your inbox.</p>
+                </div>
+                <form class="w-full" onsubmit="event.preventDefault();">
+                    <label for="newsletter-email" class="sr-only">Email address</label>
+                    <div class="flex max-w-md">
+                        <input id="newsletter-email" type="email" required placeholder="you@example.com" class="w-full rounded-l-md px-3 py-2 text-gray-900 focus:outline-none" />
+                        <button type="submit" class="rounded-r-md bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700">Subscribe</button>
+                    </div>
+                </form>
+            </div>
+
             <div class="border-t border-gray-800 mt-6 pt-6">
                 <div class="flex flex-col md:flex-row justify-between items-center text-xs text-gray-400">
-                    <p>&copy; 2024 Propeptides. All rights reserved.</p>
+                    <p>&copy; <span id="current-year"></span> Propeptides. All rights reserved.</p>
                     <div class="flex space-x-4 mt-2 md:mt-0">
                         <a href="{{ url_for('privacy') }}" class="hover:text-brand-400 transition-colors">Privacy Policy</a>
                         <a href="{{ url_for('terms') }}" class="hover:text-brand-400 transition-colors">Terms of Service</a>
@@ -221,9 +245,67 @@
 
     <script>
         function toggleMobileMenu() {
-            const mobileMenu = document.querySelector('.mobile-menu');
-            mobileMenu.classList.toggle('hidden');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const btn = document.querySelector('.mobile-menu-button');
+            const isHidden = mobileMenu.classList.toggle('hidden');
+            btn.setAttribute('aria-expanded', String(!isHidden));
         }
+
+        // Profile menu toggle with outside click + Escape to close
+        (function () {
+            const btn = document.getElementById('profile-menu-button');
+            const menu = document.getElementById('profile-menu');
+            if (btn && menu) {
+                function closeMenu() {
+                    menu.classList.add('hidden');
+                    btn.setAttribute('aria-expanded', 'false');
+                }
+                btn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const willOpen = menu.classList.contains('hidden');
+                    menu.classList.toggle('hidden');
+                    btn.setAttribute('aria-expanded', String(willOpen));
+                });
+                document.addEventListener('click', function (e) {
+                    if (!menu.classList.contains('hidden')) {
+                        const target = e.target;
+                        if (!menu.contains(target) && target !== btn && !btn.contains(target)) {
+                            closeMenu();
+                        }
+                    }
+                });
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape') closeMenu();
+                });
+            }
+        })();
+
+        // Announcement bar dismiss (persisted)
+        (function () {
+            const bar = document.getElementById('announcement-bar');
+            const close = document.getElementById('announcement-close');
+            try {
+                const dismissed = localStorage.getItem('announcementDismissed');
+                if (dismissed === 'true') {
+                    bar.style.display = 'none';
+                }
+                close && close.addEventListener('click', function () {
+                    bar.style.display = 'none';
+                    localStorage.setItem('announcementDismissed', 'true');
+                });
+            } catch (e) {
+                // If localStorage unavailable, just allow closing without persisting
+                close && close.addEventListener('click', function () {
+                    bar.style.display = 'none';
+                });
+            }
+        })();
+
+        // Auto-update footer year
+        (function () {
+            const el = document.getElementById('current-year');
+            if (el) el.textContent = String(new Date().getFullYear());
+        })();
 
         // Initialize Lucide icons
         lucide.createIcons();
