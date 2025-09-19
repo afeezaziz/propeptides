@@ -4,205 +4,284 @@
 
 {% block content %}
     <!-- Hero Section -->
-    <section class="relative bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 text-white py-16 md:py-24">
+    <section class="relative bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 text-white py-20 md:py-32 overflow-hidden">
         <div class="absolute inset-0 bg-black opacity-20"></div>
+        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
         <div class="relative container mx-auto px-4">
-            <div class="grid md:grid-cols-2 gap-12 items-center min-h-[600px]">
-                <div class="text-center md:text-left">
-                    <div class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full mb-6">
-                        <span class="text-sm font-medium text-white">SCIENTIFIC EXCELLENCE</span>
+            <div class="grid lg:grid-cols-2 gap-16 items-center min-h-[700px]">
+                <div class="text-center lg:text-left">
+                    <div class="inline-flex items-center px-6 py-3 bg-white/10 backdrop-blur-sm rounded-full mb-8 border border-white/20">
+                        <svg class="w-5 h-5 text-accent-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                        <span class="text-sm font-medium text-white">TRUSTED BY RESEARCHERS WORLDWIDE</span>
                     </div>
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                    <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight">
                         Premium Research
                         <span class="block text-accent-400">Peptides</span>
                     </h1>
-                    <p class="text-lg md:text-xl mb-8 text-gray-200 max-w-2xl mx-auto md:mx-0 leading-relaxed">
-                        Research-grade peptides with 99%+ purity. Trusted by scientists worldwide. Fast, secure shipping to your laboratory.
+                    <p class="text-xl md:text-2xl mb-12 text-gray-100 max-w-3xl mx-auto lg:mx-0 leading-relaxed">
+                        Cutting-edge peptide compounds with laboratory-grade purity. Accelerate your research with our scientifically validated formulations.
                     </p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start mb-8">
-                        <a href="#products" class="bg-accent-500 hover:bg-accent-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors shadow-lg">
-                            Shop Now
+                    <div class="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start mb-12">
+                        <a href="{{ url_for('peptides') }}" class="bg-accent-500 hover:bg-accent-600 text-white px-10 py-4 rounded-xl font-semibold transition-all duration-300 shadow-2xl hover:shadow-accent-500/25 transform hover:scale-105">
+                            Browse Collection
                         </a>
-                        <a href="#services" class="bg-white/10 hover:bg-white/20 text-white px-8 py-3 rounded-lg font-semibold transition-colors backdrop-blur-sm">
-                            Learn More
+                        <a href="{{ url_for('posts') }}" class="bg-white/10 hover:bg-white/20 text-white px-10 py-4 rounded-xl font-semibold transition-all duration-300 backdrop-blur-sm border border-white/20 hover:border-white/40">
+                            Research Library
                         </a>
                     </div>
-                    <div class="flex flex-wrap gap-6 justify-center md:justify-start text-sm">
-                        <div class="flex items-center gap-2">
-                            <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span class="text-white">99%+ Purity</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl mx-auto lg:mx-0">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-white">99%+ Purity</div>
+                                <div class="text-sm text-gray-300">Lab Verified</div>
+                            </div>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span class="text-white">Fast Shipping</span>
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-white">Fast Shipping</div>
+                                <div class="text-sm text-gray-300">2-3 Days</div>
+                            </div>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span class="text-white">24/7 Support</span>
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-white">Expert Support</div>
+                                <div class="text-sm text-gray-300">24/7 Available</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="hidden md:block">
-                    <div class="relative">
-                        <div class="w-64 h-64 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto">
-                            <div class="text-center">
-                                <div class="text-5xl font-bold text-white mb-2">5000+</div>
-                                <div class="text-lg text-gray-200">Happy Customers</div>
-                            </div>
+                <div class="hidden lg:block relative">
+                    <div class="grid grid-cols-2 gap-8 max-w-lg mx-auto">
+                        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 transform hover:scale-105 transition-transform duration-300">
+                            <div class="text-3xl font-bold text-accent-400 mb-2">15+</div>
+                            <div class="text-sm text-gray-200">Years Experience</div>
                         </div>
-                        <div class="absolute -top-4 -right-4 w-20 h-20 bg-accent-400 rounded-full flex items-center justify-center">
-                            <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
-                            </svg>
+                        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 transform hover:scale-105 transition-transform duration-300 mt-8">
+                            <div class="text-3xl font-bold text-green-400 mb-2">50K+</div>
+                            <div class="text-sm text-gray-200">Research Papers</div>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 transform hover:scale-105 transition-transform duration-300">
+                            <div class="text-3xl font-bold text-blue-400 mb-2">98%</div>
+                            <div class="text-sm text-gray-200">Customer Satisfaction</div>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 transform hover:scale-105 transition-transform duration-300 mt-8">
+                            <div class="text-3xl font-bold text-purple-400 mb-2">ISO</div>
+                            <div class="text-sm text-gray-200">Certified Lab</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-gray-50 to-transparent"></div>
     </section>
 
     <!-- Featured Products -->
-    <section id="products" class="py-16 md:py-20 bg-white">
+    <section id="products" class="py-20 md:py-24 bg-white">
         <div class="container mx-auto px-4">
-            <div class="text-center mb-12">
-                <h2 class="text-4xl md:text-5xl font-bold mb-4 text-gray-900">Featured Products</h2>
-                <p class="text-lg text-gray-600 max-w-2xl mx-auto">Discover our premium research peptides trusted by scientists worldwide</p>
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center px-4 py-2 bg-brand-100 rounded-full mb-6">
+                    <svg class="w-5 h-5 text-brand-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z"/>
+                    </svg>
+                    <span class="text-sm font-medium text-brand-700">FEATURED COLLECTION</span>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gray-900">Premium Research Peptides</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Scientifically validated compounds for cutting-edge research. Each batch undergoes rigorous quality testing to ensure maximum purity and efficacy.</p>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Product Card 1 -->
-                <div class="bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden">
-                    <div class="relative overflow-hidden">
-                        <img src="https://via.placeholder.com/300x200/3b82f6/ffffff?text=BPC-157" alt="BPC-157" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
-                        <div class="absolute top-3 left-3">
-                            <span class="bg-brand-600 text-white px-3 py-1 rounded-full text-xs font-semibold">Best Seller</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Product Card 1 - Semaglutide -->
+                <div class="bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden">
+                    <div class="relative overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100">
+                        <img src="https://images.unsplash.com/photo-1532184900498-65c2798ba007?w=400&h=300&fit=crop&crop=center" alt="Semaglutide" class="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-brand-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">RESEARCH GRADE</span>
+                        </div>
+                        <div class="absolute top-4 right-4">
+                            <span class="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-lg">IN STOCK</span>
                         </div>
                     </div>
                     <div class="p-6">
-                        <h3 class="font-bold text-lg mb-2 text-gray-900">BPC-157</h3>
-                        <p class="text-sm text-gray-600 mb-4">Body Protection Compound - 5mg</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-2xl font-bold text-brand-600">$89.99</span>
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="font-bold text-xl text-gray-900">Semaglutide</h3>
                             <div class="flex items-center">
                                 <div class="flex text-yellow-400">
-                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                    <svg class="w-4 h-4 text-gray-300" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                </div>
-                                <span class="text-sm text-gray-600 ml-1">(4.0)</span>
-                            </div>
-                        </div>
-                        <button class="w-full bg-brand-600 hover:bg-brand-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">
-                            Add to Cart
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Product Card 2 -->
-                <div class="bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden">
-                    <div class="relative overflow-hidden">
-                        <img src="https://via.placeholder.com/300x200/2563eb/ffffff?text=TB-500" alt="TB-500" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
-                        <div class="absolute top-3 left-3">
-                            <span class="bg-accent-500 text-white px-3 py-1 rounded-full text-xs font-semibold">Popular</span>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-bold text-lg mb-2 text-gray-900">TB-500</h3>
-                        <p class="text-sm text-gray-600 mb-4">Thymosin Beta-4 - 5mg</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-2xl font-bold text-brand-600">$94.99</span>
-                            <div class="flex items-center">
-                                <div class="flex text-yellow-400">
-                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z"/></svg>
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z"/></svg>
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z"/></svg>
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z"/></svg>
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z"/></svg>
                                 </div>
                                 <span class="text-sm text-gray-600 ml-1">(5.0)</span>
                             </div>
                         </div>
-                        <button class="w-full bg-brand-600 hover:bg-brand-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">
-                            Add to Cart
-                        </button>
+                        <p class="text-sm text-gray-600 mb-4">GLP-1 Receptor Agonist • 5mg</p>
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <span class="text-3xl font-bold text-brand-600">$149</span>
+                                <span class="text-sm text-gray-500">/vial</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-green-600 font-semibold">99.8% Purity</div>
+                                <div class="text-xs text-gray-500">HPLC Tested</div>
+                            </div>
+                        </div>
+                        <a href="{{ url_for('peptides') }}" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 block text-center shadow-lg hover:shadow-brand-600/25">
+                            View Details
+                        </a>
                     </div>
                 </div>
 
-                <!-- Product Card 3 -->
-                <div class="bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden">
-                    <div class="relative overflow-hidden">
-                        <img src="https://via.placeholder.com/300x200/10b981/ffffff?text=GHK-Cu" alt="GHK-Cu" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
-                        <div class="absolute top-3 left-3">
-                            <span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold">New</span>
+                <!-- Product Card 2 - Retatrutide -->
+                <div class="bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden">
+                    <div class="relative overflow-hidden bg-gradient-to-br from-purple-50 to-pink-100">
+                        <img src="https://images.unsplash.com/photo-1530026186672-2cd00ffc50fe?w=400&h=300&fit=crop&crop=center" alt="Retatrutide" class="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">NEW ARRIVAL</span>
+                        </div>
+                        <div class="absolute top-4 right-4">
+                            <span class="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-lg">IN STOCK</span>
                         </div>
                     </div>
                     <div class="p-6">
-                        <h3 class="font-bold text-lg mb-2 text-gray-900">GHK-Cu</h3>
-                        <p class="text-sm text-gray-600 mb-4">Copper Peptide - 50mg</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-2xl font-bold text-brand-600">$124.99</span>
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="font-bold text-xl text-gray-900">Retatrutide</h3>
                             <div class="flex items-center">
                                 <div class="flex text-yellow-400">
-                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                    <svg class="w-4 h-4 text-gray-300" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z"/></svg>
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z"/></svg>
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z"/></svg>
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3-.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z"/></svg>
+                                    <svg class="w-4 h-4 text-gray-300" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z"/></svg>
                                 </div>
                                 <span class="text-sm text-gray-600 ml-1">(4.0)</span>
                             </div>
                         </div>
-                        <button class="w-full bg-brand-600 hover:bg-brand-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">
-                            Add to Cart
-                        </button>
+                        <p class="text-sm text-gray-600 mb-4">Triple Agonist • 10mg</p>
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <span class="text-3xl font-bold text-brand-600">$299</span>
+                                <span class="text-sm text-gray-500">/vial</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-green-600 font-semibold">99.5% Purity</div>
+                                <div class="text-xs text-gray-500">MS Verified</div>
+                            </div>
+                        </div>
+                        <a href="{{ url_for('peptides') }}" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 block text-center shadow-lg hover:shadow-purple-600/25">
+                            View Details
+                        </a>
                     </div>
                 </div>
 
-                <!-- Product Card 4 -->
-                <div class="bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden">
-                    <div class="relative overflow-hidden">
-                        <img src="https://via.placeholder.com/300x200/f59e0b/ffffff?text=Ipamorelin" alt="Ipamorelin" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
-                        <div class="absolute top-3 left-3">
-                            <span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold">Sale</span>
+                <!-- Product Card 3 - BPC-157 -->
+                <div class="bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden">
+                    <div class="relative overflow-hidden bg-gradient-to-br from-green-50 to-emerald-100">
+                        <img src="https://images.unsplash.com/photo-1584362917165-526a968579e8?w=400&h=300&fit=crop&crop=center" alt="BPC-157" class="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">BEST SELLER</span>
+                        </div>
+                        <div class="absolute top-4 right-4">
+                            <span class="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-lg">IN STOCK</span>
                         </div>
                     </div>
                     <div class="p-6">
-                        <h3 class="font-bold text-lg mb-2 text-gray-900">Ipamorelin</h3>
-                        <p class="text-sm text-gray-600 mb-4">Growth Hormone - 2mg</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <span class="text-2xl font-bold text-brand-600">$79.99</span>
-                                <span class="text-sm text-gray-500 line-through ml-2">$99.99</span>
-                            </div>
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="font-bold text-xl text-gray-900">BPC-157</h3>
                             <div class="flex items-center">
                                 <div class="flex text-yellow-400">
-                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                    <svg class="w-4 h-4 text-gray-300" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                    <svg class="w-4 h-4 text-gray-300" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z"/></svg>
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z"/></svg>
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3-.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z"/></svg>
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3-.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z"/></svg>
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3-.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z"/></svg>
                                 </div>
-                                <span class="text-sm text-gray-600 ml-1">(3.0)</span>
+                                <span class="text-sm text-gray-600 ml-1">(5.0)</span>
                             </div>
                         </div>
-                        <button class="w-full bg-brand-600 hover:bg-brand-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">
-                            Add to Cart
-                        </button>
+                        <p class="text-sm text-gray-600 mb-4">Body Protection • 5mg</p>
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <span class="text-3xl font-bold text-brand-600">$89</span>
+                                <span class="text-sm text-gray-500">/vial</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-green-600 font-semibold">99.9% Purity</div>
+                                <div class="text-xs text-gray-500">Lab Tested</div>
+                            </div>
+                        </div>
+                        <a href="{{ url_for('peptides') }}" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 block text-center shadow-lg hover:shadow-green-600/25">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Product Card 4 - TB-500 -->
+                <div class="bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden">
+                    <div class="relative overflow-hidden bg-gradient-to-br from-orange-50 to-red-100">
+                        <img src="https://images.unsplash.com/photo-1631729371254-42b282d27f13?w=400&h=300&fit=crop&crop=center" alt="TB-500" class="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">POPULAR</span>
+                        </div>
+                        <div class="absolute top-4 right-4">
+                            <span class="bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-lg">LIMITED</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="font-bold text-xl text-gray-900">TB-500</h3>
+                            <div class="flex items-center">
+                                <div class="flex text-yellow-400">
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3-.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z"/></svg>
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3-.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z"/></svg>
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3-.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z"/></svg>
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3-.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z"/></svg>
+                                    <svg class="w-4 h-4 text-gray-300" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3-.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z"/></svg>
+                                </div>
+                                <span class="text-sm text-gray-600 ml-1">(4.0)</span>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-4">Thymosin Beta-4 • 5mg</p>
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <span class="text-3xl font-bold text-brand-600">$95</span>
+                                <span class="text-sm text-gray-500">/vial</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-green-600 font-semibold">99.7% Purity</div>
+                                <div class="text-xs text-gray-500">MS Verified</div>
+                            </div>
+                        </div>
+                        <a href="{{ url_for('peptides') }}" class="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 block text-center shadow-lg hover:shadow-orange-600/25">
+                            View Details
+                        </a>
                     </div>
                 </div>
             </div>
 
-            <div class="text-center mt-12">
-                <a href="#" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-brand-600 hover:bg-brand-700 transition-colors">
-                    View All Products
+            <div class="text-center mt-16">
+                <a href="{{ url_for('peptides') }}" class="inline-flex items-center px-8 py-4 border border-transparent text-lg font-semibold rounded-xl text-white bg-brand-600 hover:bg-brand-700 transition-all duration-300 shadow-lg hover:shadow-brand-600/25 transform hover:scale-105">
+                    Browse Full Collection
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
                 </a>
             </div>
         </div>
