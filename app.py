@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from auth import google_auth, login_manager, create_or_update_user
 from models import db, Post, Product, Category, CartItem, Order, OrderItem, Payment, User, PeptideCycle, DosageLog, ProgressEntry
 from dotenv import load_dotenv
+import re
 import os
 import secrets
 import uuid
@@ -29,6 +30,13 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Initialize SQLAlchemy
 from models import db
 db.init_app(app)
+
+# Register template filters
+from template_filters import markdown_filter, excerpt_filter, reading_time_filter, truncate_filter
+app.jinja_env.filters['markdown'] = markdown_filter
+app.jinja_env.filters['excerpt'] = excerpt_filter
+app.jinja_env.filters['reading_time'] = reading_time_filter
+app.jinja_env.filters['truncate'] = truncate_filter
 
 login_manager.init_app(app)
 
@@ -105,7 +113,90 @@ def posts():
 @app.route('/posts/<slug>')
 def post_detail(slug):
     post = Post.query.filter_by(slug=slug, status='published').first_or_404()
-    return render_template('posts/detail.html', post=post)
+
+    # Get related posts based on content similarity and tags
+    related_posts = get_related_posts(post, limit=3)
+
+    return render_template('posts/detail.html', post=post, related_posts=related_posts)
+
+def get_related_posts(current_post, limit=3):
+    """Get related posts based on content similarity"""
+    # Extract keywords from current post
+    current_keywords = extract_keywords(current_post.title + ' ' + current_post.excerpt)
+
+    # Get all published posts except current post
+    all_posts = Post.query.filter(
+        Post.status == 'published',
+        Post.id != current_post.id
+    ).all()
+
+    # Score each post based on keyword matches
+    scored_posts = []
+    for post in all_posts:
+        post_keywords = extract_keywords(post.title + ' ' + post.excerpt)
+        score = calculate_similarity(current_keywords, post_keywords)
+
+        # Boost score for posts with similar content themes
+        if has_similar_theme(current_post.content, post.content):
+            score += 2
+
+        if score > 0:
+            scored_posts.append((post, score))
+
+    # Sort by score and return top posts
+    scored_posts.sort(key=lambda x: x[1], reverse=True)
+    return [post for post, score in scored_posts[:limit]]
+
+def extract_keywords(text):
+    """Extract keywords from text"""
+    if not text:
+        return []
+
+    # Simple keyword extraction - remove common words and get unique terms
+    text = text.lower()
+    words = re.findall(r'\b[a-zA-Z]{3,}\b', text)
+
+    # Filter out common words
+    stop_words = {
+        'the', 'and', 'for', 'are', 'but', 'not', 'you', 'all', 'can', 'had', 'her', 'was', 'one', 'our', 'out', 'day',
+        'get', 'has', 'him', 'his', 'how', 'its', 'may', 'new', 'now', 'old', 'see', 'two', 'way', 'who', 'boy',
+        'did', 'she', 'use', 'her', 'than', 'when', 'with', 'have', 'this', 'that', 'from', 'they', 'been', 'have'
+    }
+
+    keywords = [word for word in words if word not in stop_words]
+    return list(set(keywords))  # Remove duplicates
+
+def calculate_similarity(keywords1, keywords2):
+    """Calculate similarity score between two keyword lists"""
+    if not keywords1 or not keywords2:
+        return 0
+
+    intersection = set(keywords1) & set(keywords2)
+    union = set(keywords1) | set(keywords2)
+
+    if not union:
+        return 0
+
+    return len(intersection) / len(union)
+
+def has_similar_theme(content1, content2):
+    """Check if two posts have similar themes"""
+    if not content1 or not content2:
+        return False
+
+    # Check for common peptide/drug names
+    peptide_terms = ['semaglutide', 'retatrutide', 'tirzepatide', 'liraglutide', 'glp-1', 'gip', 'glucagon',
+                     'peptide', 'agonist', 'receptor', 'diabetes', 'obesity', 'weight', 'metabolic']
+
+    content1_lower = content1.lower()
+    content2_lower = content2.lower()
+
+    common_terms = []
+    for term in peptide_terms:
+        if term in content1_lower and term in content2_lower:
+            common_terms.append(term)
+
+    return len(common_terms) >= 1
 
 # Products Routes
 @app.route('/peptides')
