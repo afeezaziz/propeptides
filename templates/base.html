@@ -61,10 +61,10 @@
 
                 <!-- Desktop Navigation -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="{{ url_for('main.peptides') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Peptides</a>
-                    <a href="{{ url_for('main.posts') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Blog</a>
-                    <a href="{{ url_for('main.calculator') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Calculator</a>
-                    <a href="{{ url_for('main.tracker') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Tracker</a>
+                    <a href="{{ url_for('peptides') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Peptides</a>
+                    <a href="{{ url_for('posts') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Blog</a>
+                    <a href="{{ url_for('calculator') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Calculator</a>
+                    <a href="{{ url_for('tracker') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Tracker</a>
                 </div>
 
                 <!-- Desktop CTA -->
@@ -115,10 +115,10 @@
             <!-- Mobile menu -->
             <div class="mobile-menu hidden md:hidden py-4 border-t border-gray-200">
                 <div class="flex flex-col space-y-3">
-                    <a href="{{ url_for('main.peptides') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Peptides</a>
-                    <a href="{{ url_for('main.posts') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Blog</a>
-                    <a href="{{ url_for('main.calculator') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Calculator</a>
-                    <a href="{{ url_for('main.tracker') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Tracker</a>
+                    <a href="{{ url_for('peptides') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Peptides</a>
+                    <a href="{{ url_for('posts') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Blog</a>
+                    <a href="{{ url_for('calculator') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Calculator</a>
+                    <a href="{{ url_for('tracker') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Tracker</a>
                     <div class="pt-4 flex flex-col space-y-3">
                         <a href="#products" class="text-brand-600 hover:text-brand-700 font-medium">Shop</a>
                         {% if current_user.is_authenticated %}
@@ -186,9 +186,9 @@
 
                 <!-- Navigation Links -->
                 <div class="flex flex-wrap justify-center gap-6 text-sm">
-                    <a href="{{ url_for('main.peptides') }}" class="text-gray-400 hover:text-brand-400 transition-colors">Peptides</a>
-                    <a href="{{ url_for('main.posts') }}" class="text-gray-400 hover:text-brand-400 transition-colors">Blog</a>
-                    <a href="{{ url_for('main.calculator') }}" class="text-gray-400 hover:text-brand-400 transition-colors">Calculator</a>
+                    <a href="{{ url_for('peptides') }}" class="text-gray-400 hover:text-brand-400 transition-colors">Peptides</a>
+                    <a href="{{ url_for('posts') }}" class="text-gray-400 hover:text-brand-400 transition-colors">Blog</a>
+                    <a href="{{ url_for('calculator') }}" class="text-gray-400 hover:text-brand-400 transition-colors">Calculator</a>
                     <a href="#" class="text-gray-400 hover:text-brand-400 transition-colors">Tracker</a>
                 </div>
 
@@ -209,9 +209,9 @@
                 <div class="flex flex-col md:flex-row justify-between items-center text-xs text-gray-400">
                     <p>&copy; 2024 Propeptides. All rights reserved.</p>
                     <div class="flex space-x-4 mt-2 md:mt-0">
-                        <a href="{{ url_for('main.privacy') }}" class="hover:text-brand-400 transition-colors">Privacy Policy</a>
-                        <a href="{{ url_for('main.terms') }}" class="hover:text-brand-400 transition-colors">Terms of Service</a>
-                        <a href="{{ url_for('main.shipping') }}" class="hover:text-brand-400 transition-colors">Shipping Policy</a>
+                        <a href="{{ url_for('privacy') }}" class="hover:text-brand-400 transition-colors">Privacy Policy</a>
+                        <a href="{{ url_for('terms') }}" class="hover:text-brand-400 transition-colors">Terms of Service</a>
+                        <a href="{{ url_for('shipping') }}" class="hover:text-brand-400 transition-colors">Shipping Policy</a>
                     </div>
                 </div>
             </div>

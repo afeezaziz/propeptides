@@ -17,7 +17,7 @@
                         <i data-lucide="printer" class="w-4 h-4"></i>
                         <span>Print</span>
                     </button>
-                    <a href="{{ url_for('main.orders') }}" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg transition-colors inline-flex items-center space-x-2">
+                    <a href="{{ url_for('orders') }}" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg transition-colors inline-flex items-center space-x-2">
                         <i data-lucide="arrow-left" class="w-4 h-4"></i>
                         <span>Back to Orders</span>
                     </a>
@@ -108,7 +108,7 @@
                                 {% endif %}
                                 <div class="flex-1">
                                     <h3 class="font-medium text-gray-900">
-                                        <a href="{{ url_for('main.peptide_detail', slug=item.product.slug) }}" class="hover:text-brand-600">
+                                        <a href="{{ url_for('peptide_detail', slug=item.product.slug) }}" class="hover:text-brand-600">
                                             {{ item.product.name }}
                                         </a>
                                     </h3>

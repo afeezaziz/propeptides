@@ -31,14 +31,14 @@
                     </div>
 
                     <h2 class="text-xl font-bold text-gray-900 mb-3 hover:text-brand-600 transition-colors">
-                        <a href="{{ url_for('main.post_detail', slug=post.slug) }}">{{ post.title }}</a>
+                        <a href="{{ url_for('post_detail', slug=post.slug) }}">{{ post.title }}</a>
                     </h2>
 
                     {% if post.excerpt %}
                     <p class="text-gray-600 mb-4">{{ post.excerpt }}</p>
                     {% endif %}
 
-                    <a href="{{ url_for('main.post_detail', slug=post.slug) }}" class="text-brand-600 hover:text-brand-700 font-medium inline-flex items-center">
+                    <a href="{{ url_for('post_detail', slug=post.slug) }}" class="text-brand-600 hover:text-brand-700 font-medium inline-flex items-center">
                         Read More
                         <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
                     </a>
@@ -52,7 +52,7 @@
         <div class="mt-12 flex justify-center">
             <nav class="flex space-x-2">
                 {% if posts.has_prev %}
-                <a href="{{ url_for('main.posts', page=posts.prev_num) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                <a href="{{ url_for('posts', page=posts.prev_num) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                     Previous
                 </a>
                 {% endif %}
@@ -60,7 +60,7 @@
                 {% for page_num in posts.iter_pages() %}
                     {% if page_num %}
                         {% if page_num != posts.page %}
-                        <a href="{{ url_for('main.posts', page=page_num) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                        <a href="{{ url_for('posts', page=page_num) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                             {{ page_num }}
                         </a>
                         {% else %}
@@ -72,7 +72,7 @@
                 {% endfor %}
 
                 {% if posts.has_next %}
-                <a href="{{ url_for('main.posts', page=posts.next_num) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                <a href="{{ url_for('posts', page=posts.next_num) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                     Next
                 </a>
                 {% endif %}

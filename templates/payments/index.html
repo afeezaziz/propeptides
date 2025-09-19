@@ -65,7 +65,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <a href="{{ url_for('main.payment_detail', payment_id=payment.id) }}" class="text-brand-600 hover:text-brand-700">
+                                <a href="{{ url_for('payment_detail', payment_id=payment.id) }}" class="text-brand-600 hover:text-brand-700">
                                     View Details
                                 </a>
                             </td>
@@ -81,12 +81,12 @@
                 <div class="flex items-center justify-between">
                     <div class="flex-1 flex justify-between sm:hidden">
                         {% if payments.has_prev %}
-                        <a href="{{ url_for('main.payments', page=payments.prev_num) }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        <a href="{{ url_for('payments', page=payments.prev_num) }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                             Previous
                         </a>
                         {% endif %}
                         {% if payments.has_next %}
-                        <a href="{{ url_for('main.payments', page=payments.next_num) }}" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        <a href="{{ url_for('payments', page=payments.next_num) }}" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                             Next
                         </a>
                         {% endif %}
@@ -102,7 +102,7 @@
                         <div>
                             <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
                                 {% if payments.has_prev %}
-                                <a href="{{ url_for('main.payments', page=payments.prev_num) }}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <a href="{{ url_for('payments', page=payments.prev_num) }}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                                     <i data-lucide="chevron-left" class="w-5 h-5"></i>
                                 </a>
                                 {% endif %}
@@ -110,7 +110,7 @@
                                 {% for page_num in payments.iter_pages() %}
                                     {% if page_num %}
                                         {% if page_num != payments.page %}
-                                        <a href="{{ url_for('main.payments', page=page_num) }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                                        <a href="{{ url_for('payments', page=page_num) }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
                                             {{ page_num }}
                                         </a>
                                         {% else %}
@@ -126,7 +126,7 @@
                                 {% endfor %}
 
                                 {% if payments.has_next %}
-                                <a href="{{ url_for('main.payments', page=payments.next_num) }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <a href="{{ url_for('payments', page=payments.next_num) }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                                     <i data-lucide="chevron-right" class="w-5 h-5"></i>
                                 </a>
                                 {% endif %}
@@ -198,7 +198,7 @@
             </div>
             <h2 class="text-2xl font-bold text-gray-900 mb-4">No payment history</h2>
             <p class="text-gray-600 mb-8">You haven't made any payments yet.</p>
-            <a href="{{ url_for('main.peptides') }}" class="bg-brand-600 hover:bg-brand-700 text-white py-3 px-8 rounded-lg font-medium transition-colors inline-flex items-center space-x-2">
+            <a href="{{ url_for('peptides') }}" class="bg-brand-600 hover:bg-brand-700 text-white py-3 px-8 rounded-lg font-medium transition-colors inline-flex items-center space-x-2">
                 <i data-lucide="flask-conical" class="w-5 h-5"></i>
                 <span>Start Shopping</span>
             </a>

@@ -10,7 +10,7 @@
     </div>
 
     <div class="bg-white rounded-lg shadow-sm p-6">
-        <form method="POST" action="{{ url_for('main.add_progress') }}">
+        <form method="POST" action="{{ url_for('add_progress') }}">
             <div class="space-y-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Select Cycle</label>
@@ -73,7 +73,7 @@
                 </div>
 
                 <div class="flex justify-end space-x-4">
-                    <a href="{{ url_for('main.tracker') }}" class="px-6 py-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors">Cancel</a>
+                    <a href="{{ url_for('tracker') }}" class="px-6 py-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors">Cancel</a>
                     <button type="submit" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors">Add Progress</button>
                 </div>
             </div>

@@ -78,7 +78,7 @@
 
                 <!-- Add to Cart Form -->
                 {% if current_user.is_authenticated and product.is_in_stock() %}
-                <form method="POST" action="{{ url_for('main.add_to_cart') }}" class="space-y-4">
+                <form method="POST" action="{{ url_for('add_to_cart') }}" class="space-y-4">
                     <input type="hidden" name="product_id" value="{{ product.id }}">
 
                     <div>
@@ -92,7 +92,7 @@
                     </button>
                 </form>
                 {% elif product.is_in_stock() %}
-                <a href="{{ url_for('main.login') }}" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 inline-block">
+                <a href="{{ url_for('login') }}" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 inline-block">
                     <i data-lucide="log-in" class="w-5 h-5"></i>
                     <span>Login to Purchase</span>
                 </a>
@@ -149,7 +149,7 @@
                         <h3 class="font-medium text-gray-900 mb-2">{{ related.name }}</h3>
                         <div class="flex items-center justify-between">
                             <span class="font-bold text-brand-600">${{ "%.2f"|format(related.price) }}</span>
-                            <a href="{{ url_for('main.peptide_detail', slug=related.slug) }}" class="text-brand-600 hover:text-brand-700">
+                            <a href="{{ url_for('peptide_detail', slug=related.slug) }}" class="text-brand-600 hover:text-brand-700">
                                 <i data-lucide="arrow-right" class="w-4 h-4"></i>
                             </a>
                         </div>

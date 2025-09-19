@@ -62,7 +62,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <a href="{{ url_for('main.order_detail', order_number=order.order_number) }}" class="text-brand-600 hover:text-brand-700">
+                                <a href="{{ url_for('order_detail', order_number=order.order_number) }}" class="text-brand-600 hover:text-brand-700">
                                     View Details
                                 </a>
                             </td>
@@ -78,12 +78,12 @@
                 <div class="flex items-center justify-between">
                     <div class="flex-1 flex justify-between sm:hidden">
                         {% if orders.has_prev %}
-                        <a href="{{ url_for('main.orders', page=orders.prev_num) }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        <a href="{{ url_for('orders', page=orders.prev_num) }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                             Previous
                         </a>
                         {% endif %}
                         {% if orders.has_next %}
-                        <a href="{{ url_for('main.orders', page=orders.next_num) }}" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        <a href="{{ url_for('orders', page=orders.next_num) }}" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                             Next
                         </a>
                         {% endif %}
@@ -99,7 +99,7 @@
                         <div>
                             <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
                                 {% if orders.has_prev %}
-                                <a href="{{ url_for('main.orders', page=orders.prev_num) }}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <a href="{{ url_for('orders', page=orders.prev_num) }}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                                     <i data-lucide="chevron-left" class="w-5 h-5"></i>
                                 </a>
                                 {% endif %}
@@ -107,7 +107,7 @@
                                 {% for page_num in orders.iter_pages() %}
                                     {% if page_num %}
                                         {% if page_num != orders.page %}
-                                        <a href="{{ url_for('main.orders', page=page_num) }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                                        <a href="{{ url_for('orders', page=page_num) }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
                                             {{ page_num }}
                                         </a>
                                         {% else %}
@@ -123,7 +123,7 @@
                                 {% endfor %}
 
                                 {% if orders.has_next %}
-                                <a href="{{ url_for('main.orders', page=orders.next_num) }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <a href="{{ url_for('orders', page=orders.next_num) }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                                     <i data-lucide="chevron-right" class="w-5 h-5"></i>
                                 </a>
                                 {% endif %}
@@ -193,7 +193,7 @@
             </div>
             <h2 class="text-2xl font-bold text-gray-900 mb-4">No orders yet</h2>
             <p class="text-gray-600 mb-8">You haven't placed any orders with us yet.</p>
-            <a href="{{ url_for('main.peptides') }}" class="bg-brand-600 hover:bg-brand-700 text-white py-3 px-8 rounded-lg font-medium transition-colors inline-flex items-center space-x-2">
+            <a href="{{ url_for('peptides') }}" class="bg-brand-600 hover:bg-brand-700 text-white py-3 px-8 rounded-lg font-medium transition-colors inline-flex items-center space-x-2">
                 <i data-lucide="flask-conical" class="w-5 h-5"></i>
                 <span>Start Shopping</span>
             </a>

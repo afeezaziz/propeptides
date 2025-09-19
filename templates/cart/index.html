@@ -33,7 +33,7 @@
 
                                 <div class="flex-1">
                                     <h3 class="font-medium text-gray-900">
-                                        <a href="{{ url_for('main.peptide_detail', slug=item.product.slug) }}" class="hover:text-brand-600">
+                                        <a href="{{ url_for('peptide_detail', slug=item.product.slug) }}" class="hover:text-brand-600">
                                             {{ item.product.name }}
                                         </a>
                                     </h3>
@@ -44,12 +44,12 @@
                                 </div>
 
                                 <div class="flex items-center space-x-3">
-                                    <form method="POST" action="{{ url_for('main.update_cart') }}" class="flex items-center space-x-2" onsubmit="return updateCartItem(this, {{ item.id }})">
+                                    <form method="POST" action="{{ url_for('update_cart') }}" class="flex items-center space-x-2" onsubmit="return updateCartItem(this, {{ item.id }})">
                                         <input type="hidden" name="item_id" value="{{ item.id }}">
                                         <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock_quantity }}" class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-brand-500 focus:border-brand-500" onchange="this.form.submit()">
                                     </form>
 
-                                    <form method="POST" action="{{ url_for('main.remove_from_cart', item_id=item.id) }}" onsubmit="return confirm('Are you sure you want to remove this item?')">
+                                    <form method="POST" action="{{ url_for('remove_from_cart', item_id=item.id) }}" onsubmit="return confirm('Are you sure you want to remove this item?')">
                                         <button type="submit" class="text-red-600 hover:text-red-700 p-2">
                                             <i data-lucide="trash-2" class="w-5 h-5"></i>
                                         </button>
@@ -95,12 +95,12 @@
                         </div>
                     </div>
 
-                    <a href="{{ url_for('main.checkout') }}" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 px-6 rounded-lg font-medium transition-colors block text-center">
+                    <a href="{{ url_for('checkout') }}" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 px-6 rounded-lg font-medium transition-colors block text-center">
                         Proceed to Checkout
                     </a>
 
                     <div class="mt-4">
-                        <a href="{{ url_for('main.peptides') }}" class="text-brand-600 hover:text-brand-700 text-sm flex items-center justify-center">
+                        <a href="{{ url_for('peptides') }}" class="text-brand-600 hover:text-brand-700 text-sm flex items-center justify-center">
                             <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i>
                             Continue Shopping
                         </a>
@@ -135,7 +135,7 @@
             </div>
             <h2 class="text-2xl font-bold text-gray-900 mb-4">Your cart is empty</h2>
             <p class="text-gray-600 mb-8">Looks like you haven't added any peptides to your cart yet.</p>
-            <a href="{{ url_for('main.peptides') }}" class="bg-brand-600 hover:bg-brand-700 text-white py-3 px-8 rounded-lg font-medium transition-colors inline-flex items-center space-x-2">
+            <a href="{{ url_for('peptides') }}" class="bg-brand-600 hover:bg-brand-700 text-white py-3 px-8 rounded-lg font-medium transition-colors inline-flex items-center space-x-2">
                 <i data-lucide="flask-conical" class="w-5 h-5"></i>
                 <span>Start Shopping</span>
             </a>
