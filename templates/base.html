@@ -94,13 +94,6 @@
                         <div class="flex items-center space-x-3">
                             <div class="relative">
                                 <button id="profile-menu-button" class="flex items-center space-x-2 text-gray-700 hover:text-brand-600 transition-colors" aria-haspopup="true" aria-expanded="false" aria-controls="profile-menu">
-                                    {% if current_user.picture %}
-                                        <img src="{{ current_user.picture }}" alt="Profile" class="w-8 h-8 rounded-full">
-                                    {% else %}
-                                        <div class="w-8 h-8 bg-brand-600 rounded-full flex items-center justify-center">
-                                            <i data-lucide="user" class="w-4 h-4 text-white"></i>
-                                        </div>
-                                    {% endif %}
                                     <span class="text-sm font-medium">{{ current_user.name }}</span>
                                     <i data-lucide="chevron-down" class="w-4 h-4"></i>
                                 </button>
@@ -125,9 +118,7 @@
                         </div>
                     {% else %}
                         <div class="flex items-center space-x-3">
-                            <a href="{{ url_for('login') }}" class="relative text-gray-700 hover:text-brand-600 transition-colors" aria-label="Cart">
-                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-                            </a>
+                            <a href="{{ url_for('login') }}" class="text-gray-700 hover:text-brand-600 font-medium">Dashboard</a>
                             <a href="{{ url_for('login') }}" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2">
                                 <i data-lucide="log-in" class="w-4 h-4"></i>
                                 <span>Login</span>
@@ -156,14 +147,7 @@
                     <div class="pt-4 flex flex-col space-y-3">
                         <a href="{{ url_for('peptides') }}" class="text-brand-600 hover:text-brand-700 font-medium">Shop</a>
                         {% if current_user.is_authenticated %}
-                            <div class="flex items-center space-x-2 py-2">
-                                {% if current_user.picture %}
-                                    <img src="{{ current_user.picture }}" alt="Profile" class="w-8 h-8 rounded-full">
-                                {% else %}
-                                    <div class="w-8 h-8 bg-brand-600 rounded-full flex items-center justify-center">
-                                        <i data-lucide="user" class="w-4 h-4 text-white"></i>
-                                    </div>
-                                {% endif %}
+                            <div class="py-2">
                                 <span class="text-sm font-medium text-gray-700">{{ current_user.name }}</span>
                             </div>
                             <a href="{{ url_for('cart') }}" class="text-gray-700 hover:text-brand-700 font-medium flex items-center">
@@ -185,6 +169,7 @@
                                 <i data-lucide="log-out" class="w-4 h-4 inline mr-2"></i> Logout
                             </a>
                         {% else %}
+                            <a href="{{ url_for('login') }}" class="text-gray-700 hover:text-brand-600 font-medium text-center">Dashboard</a>
                             <a href="{{ url_for('login') }}" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg font-medium transition-colors text-center flex items-center justify-center space-x-2">
                                 <i data-lucide="log-in" class="w-4 h-4"></i>
                                 <span>Login</span>
