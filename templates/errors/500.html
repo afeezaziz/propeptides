@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}500 Internal Server Error - Propeptides{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-50">
+    <div class="max-w-md w-full text-center px-4">
+        <div class="bg-white rounded-lg shadow-md p-8">
+            <div class="mb-6">
+                <i data-lucide="server-crash" class="w-20 h-20 mx-auto text-orange-500 mb-4"></i>
+                <h1 class="text-6xl font-bold text-gray-900 mb-2">500</h1>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Internal Server Error</h2>
+                <p class="text-gray-600 mb-6">
+                    Something went wrong on our end. Our team has been notified and is working to fix the issue.
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 text-left">
+                    <h3 class="font-medium text-orange-800 mb-2">What happened:</h3>
+                    <ul class="text-sm text-orange-700 space-y-1">
+                        <li>• Our servers encountered an unexpected error</li>
+                        <li>• The issue has been automatically reported</li>
+                        <li>• Our technical team is investigating</li>
+                        <li>• We apologize for the inconvenience</li>
+                    </ul>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                    <a href="{{ url_for('index') }}" class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-lg font-medium transition-colors inline-flex items-center justify-center space-x-2">
+                        <i data-lucide="home" class="w-4 h-4"></i>
+                        <span>Go to Homepage</span>
+                    </a>
+                    <button onclick="location.reload()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-medium transition-colors inline-flex items-center justify-center space-x-2">
+                        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                        <span>Try Again</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-6 pt-6 border-t border-gray-200">
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-left">
+                    <h3 class="font-medium text-blue-800 mb-2">While you wait:</h3>
+                    <div class="text-sm text-blue-700 space-y-2">
+                        <p><strong>Try these steps:</strong></p>
+                        <ul class="space-y-1 ml-4">
+                            <li>• Refresh the page in a few minutes</li>
+                            <li>• Clear your browser cache and try again</li>
+                            <li>• Check if other pages on our site are working</li>
+                        </ul>
+                        <p class="mt-2"><strong>Need immediate help?</strong><br>
+                        Contact us at: <a href="mailto:info@propeptides.com" class="text-blue-600 hover:underline">info@propeptides.com</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    lucide.createIcons();
+});
+</script>
+{% endblock %}
