@@ -167,76 +167,83 @@
     <!-- Footer -->
     <footer class="bg-gray-900 text-white">
         <div class="container mx-auto px-4 py-8">
-            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-                <!-- Logo and Social -->
-                <div class="flex items-center space-x-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Brand & Social -->
+                <div>
                     <div class="flex items-center space-x-2">
-                        <div class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
+                        <div class="w-9 h-9 bg-brand-600 rounded-lg flex items-center justify-center">
                             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
                             </svg>
                         </div>
                         <span class="text-lg font-bold">Propeptides</span>
                     </div>
-                    <div class="flex space-x-3">
-                        <a href="#" class="text-gray-400 hover:text-brand-400 transition-colors">
+                    <p class="mt-4 text-sm text-gray-400 leading-relaxed">Premium research peptides with rigorous lab verification and researcher-first support.</p>
+                    <div class="mt-4 flex space-x-3" aria-label="Social media">
+                        <a href="#" class="text-gray-400 hover:text-brand-400 transition-colors" aria-label="Twitter">
                             <i data-lucide="twitter" class="w-4 h-4"></i>
                         </a>
-                        <a href="#" class="text-gray-400 hover:text-brand-400 transition-colors">
+                        <a href="#" class="text-gray-400 hover:text-brand-400 transition-colors" aria-label="YouTube">
                             <i data-lucide="youtube" class="w-4 h-4"></i>
                         </a>
-                        <a href="#" class="text-gray-400 hover:text-brand-400 transition-colors">
+                        <a href="#" class="text-gray-400 hover:text-brand-400 transition-colors" aria-label="Facebook">
                             <i data-lucide="facebook" class="w-4 h-4"></i>
                         </a>
-                        <a href="#" class="text-gray-400 hover:text-brand-400 transition-colors">
+                        <a href="#" class="text-gray-400 hover:text-brand-400 transition-colors" aria-label="Instagram">
                             <i data-lucide="instagram" class="w-4 h-4"></i>
                         </a>
                     </div>
                 </div>
 
-                <!-- Navigation Links -->
-                <div class="flex flex-wrap justify-center gap-6 text-sm">
-                    <a href="{{ url_for('peptides') }}" class="text-gray-400 hover:text-brand-400 transition-colors">Peptides</a>
-                    <a href="{{ url_for('posts') }}" class="text-gray-400 hover:text-brand-400 transition-colors">Blog</a>
-                    <a href="{{ url_for('calculator') }}" class="text-gray-400 hover:text-brand-400 transition-colors">Calculator</a>
-                    <a href="{{ url_for('tracker') }}" class="text-gray-400 hover:text-brand-400 transition-colors">Tracker</a>
-                </div>
+                <!-- Shop -->
+                <nav aria-label="Footer Shop Links">
+                    <h3 class="text-sm font-semibold tracking-wider text-gray-300 uppercase">Shop</h3>
+                    <ul class="mt-4 space-y-2 text-sm">
+                        <li><a href="{{ url_for('peptides') }}" class="text-gray-400 hover:text-white transition-colors">Peptides</a></li>
+                        <li><a href="{{ url_for('calculator') }}" class="text-gray-400 hover:text-white transition-colors">Calculator</a></li>
+                        <li><a href="{{ url_for('tracker') }}" class="text-gray-400 hover:text-white transition-colors">Tracker</a></li>
+                    </ul>
+                </nav>
 
-                <!-- Contact Info -->
-                <div class="flex items-center space-x-4 text-sm text-gray-400">
-                    <div class="flex items-center space-x-1">
-                        <i data-lucide="mail" class="w-4 h-4"></i>
-                        <span>info@propeptides.com</span>
-                    </div>
-                    <div class="flex items-center space-x-1">
-                        <i data-lucide="phone" class="w-4 h-4"></i>
-                        <span>1-800-PEPTIDES</span>
-                    </div>
-                </div>
-            </div>
+                <!-- Company -->
+                <nav aria-label="Footer Company Links">
+                    <h3 class="text-sm font-semibold tracking-wider text-gray-300 uppercase">Company</h3>
+                    <ul class="mt-4 space-y-2 text-sm">
+                        <li><a href="{{ url_for('posts') }}" class="text-gray-400 hover:text-white transition-colors">Blog</a></li>
+                        <li><a href="{{ url_for('privacy') }}" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+                        <li><a href="{{ url_for('terms') }}" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
+                        <li><a href="{{ url_for('shipping') }}" class="text-gray-400 hover:text-white transition-colors">Shipping Policy</a></li>
+                    </ul>
+                </nav>
 
-            <!-- Newsletter -->
-            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Contact -->
                 <div>
-                    <h3 class="text-sm font-semibold text-white">Stay in the loop</h3>
-                    <p class="mt-2 text-sm text-gray-400">Get product updates and research tidbits straight to your inbox.</p>
+                    <h3 class="text-sm font-semibold tracking-wider text-gray-300 uppercase">Contact</h3>
+                    <ul class="mt-4 space-y-3 text-sm text-gray-400">
+                        <li class="flex items-center space-x-2">
+                            <i data-lucide="mail" class="w-4 h-4"></i>
+                            <a href="mailto:info@propeptides.com" class="hover:text-white transition-colors">info@propeptides.com</a>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i data-lucide="phone" class="w-4 h-4"></i>
+                            <a href="tel:+18007378433" class="hover:text-white transition-colors">1-800-PEPTIDES</a>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i data-lucide="clock" class="w-4 h-4"></i>
+                            <span>Support: 24/7</span>
+                        </li>
+                    </ul>
                 </div>
-                <form class="w-full" onsubmit="event.preventDefault();">
-                    <label for="newsletter-email" class="sr-only">Email address</label>
-                    <div class="flex max-w-md">
-                        <input id="newsletter-email" type="email" required placeholder="you@example.com" class="w-full rounded-l-md px-3 py-2 text-gray-900 focus:outline-none" />
-                        <button type="submit" class="rounded-r-md bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700">Subscribe</button>
-                    </div>
-                </form>
             </div>
 
-            <div class="border-t border-gray-800 mt-6 pt-6">
-                <div class="flex flex-col md:flex-row justify-between items-center text-xs text-gray-400">
-                    <p>&copy; <span id="current-year"></span> Propeptides. All rights reserved.</p>
-                    <div class="flex space-x-4 mt-2 md:mt-0">
-                        <a href="{{ url_for('privacy') }}" class="hover:text-brand-400 transition-colors">Privacy Policy</a>
-                        <a href="{{ url_for('terms') }}" class="hover:text-brand-400 transition-colors">Terms of Service</a>
-                        <a href="{{ url_for('shipping') }}" class="hover:text-brand-400 transition-colors">Shipping Policy</a>
+
+            <div class="border-t border-gray-800 mt-8 pt-6">
+                <div class="flex flex-col md:flex-row justify-between items-center text-xs text-gray-400 gap-4">
+                    <p class="text-center">&copy; <span id="current-year"></span> Propeptides. All rights reserved.</p>
+                    <div class="flex flex-wrap items-center gap-4">
+                        <div class="flex items-center space-x-2"><i data-lucide="shield-check" class="w-4 h-4"></i><span>Secure checkout</span></div>
+                        <div class="flex items-center space-x-2"><i data-lucide="truck" class="w-4 h-4"></i><span>Fast shipping</span></div>
+                        <div class="flex items-center space-x-2"><i data-lucide="badge-check" class="w-4 h-4"></i><span>Quality assured</span></div>
                     </div>
                 </div>
             </div>
