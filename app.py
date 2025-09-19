@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, url_for, request, flash, jso
 from flask_login import login_required, current_user, login_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from auth import google_auth, login_manager, create_or_update_user
+from routes import bp as main_bp
 from dotenv import load_dotenv
 import os
 import secrets
@@ -28,6 +29,9 @@ from models import db
 db.init_app(app)
 
 login_manager.init_app(app)
+
+# Register blueprint
+app.register_blueprint(main_bp)
 
 
 @app.route('/')

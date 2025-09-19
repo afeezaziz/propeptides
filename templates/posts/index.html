@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Blog - Propeptides{% endblock %}
+
+{% block content %}
+<div class="bg-white">
+    <div class="container mx-auto px-4 py-12">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">Peptide Research Blog</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Stay updated with the latest research, insights, and developments in peptide science and biotechnology.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for post in posts.items %}
+            <article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                {% if post.featured_image %}
+                <img src="{{ post.featured_image }}" alt="{{ post.title }}" class="w-full h-48 object-cover">
+                {% else %}
+                <div class="w-full h-48 bg-gradient-to-r from-brand-500 to-blue-600 flex items-center justify-center">
+                    <i data-lucide="file-text" class="w-16 h-16 text-white opacity-50"></i>
+                </div>
+                {% endif %}
+
+                <div class="p-6">
+                    <div class="flex items-center text-sm text-gray-500 mb-2">
+                        <span>{{ post.created_at.strftime('%B %d, %Y') }}</span>
+                        <span class="mx-2">•</span>
+                        <span>By {{ post.author.name }}</span>
+                    </div>
+
+                    <h2 class="text-xl font-bold text-gray-900 mb-3 hover:text-brand-600 transition-colors">
+                        <a href="{{ url_for('main.post_detail', slug=post.slug) }}">{{ post.title }}</a>
+                    </h2>
+
+                    {% if post.excerpt %}
+                    <p class="text-gray-600 mb-4">{{ post.excerpt }}</p>
+                    {% endif %}
+
+                    <a href="{{ url_for('main.post_detail', slug=post.slug) }}" class="text-brand-600 hover:text-brand-700 font-medium inline-flex items-center">
+                        Read More
+                        <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
+                    </a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if posts.pages > 1 %}
+        <div class="mt-12 flex justify-center">
+            <nav class="flex space-x-2">
+                {% if posts.has_prev %}
+                <a href="{{ url_for('main.posts', page=posts.prev_num) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                    Previous
+                </a>
+                {% endif %}
+
+                {% for page_num in posts.iter_pages() %}
+                    {% if page_num %}
+                        {% if page_num != posts.page %}
+                        <a href="{{ url_for('main.posts', page=page_num) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                            {{ page_num }}
+                        </a>
+                        {% else %}
+                        <span class="px-4 py-2 bg-brand-600 text-white rounded-lg">{{ page_num }}</span>
+                        {% endif %}
+                    {% else %}
+                    <span class="px-4 py-2">...</span>
+                    {% endif %}
+                {% endfor %}
+
+                {% if posts.has_next %}
+                <a href="{{ url_for('main.posts', page=posts.next_num) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                    Next
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Blog CTA Section -->
+<section class="bg-brand-600 text-white py-16">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl font-bold mb-4">Stay Updated with Peptide Research</h2>
+        <p class="text-xl mb-8 opacity-90">
+            Subscribe to our newsletter for the latest research findings and industry insights.
+        </p>
+        <div class="max-w-md mx-auto flex gap-4">
+            <input type="email" placeholder="Enter your email" class="flex-1 px-4 py-3 rounded-lg text-gray-900">
+            <button class="bg-white text-brand-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+                Subscribe
+            </button>
+        </div>
+    </div>
+</section>
+{% endblock %}

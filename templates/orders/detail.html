@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+
+{% block title %}Order {{ order.order_number }} - Propeptides{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen py-12">
+    <div class="container mx-auto px-4">
+        <!-- Order Header -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">Order {{ order.order_number }}</h1>
+                    <p class="text-gray-600 mt-2">Placed on {{ order.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                </div>
+                <div class="flex space-x-2">
+                    <button onclick="window.print()" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors inline-flex items-center space-x-2">
+                        <i data-lucide="printer" class="w-4 h-4"></i>
+                        <span>Print</span>
+                    </button>
+                    <a href="{{ url_for('main.orders') }}" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg transition-colors inline-flex items-center space-x-2">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                        <span>Back to Orders</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Order Details -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Order Status -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Order Status</h2>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                                {% if order.status == 'delivered' %}bg-green-100 text-green-800
+                                {% elif order.status == 'shipped' %}bg-blue-100 text-blue-800
+                                {% elif order.status == 'processing' %}bg-yellow-100 text-yellow-800
+                                {% elif order.status == 'cancelled' %}bg-red-100 text-red-800
+                                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                {{ order.status.title() }}
+                            </span>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                                {% if order.payment_status == 'paid' %}bg-green-100 text-green-800
+                                {% elif order.payment_status == 'failed' %}bg-red-100 text-red-800
+                                {% elif order.payment_status == 'refunded' %}bg-yellow-100 text-yellow-800
+                                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                {{ order.payment_status.title() }}
+                            </span>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-lg font-semibold text-gray-900">${{ "%.2f"|format(order.total_amount) }}</p>
+                            <p class="text-sm text-gray-600">Total Amount</p>
+                        </div>
+                    </div>
+
+                    <!-- Order Timeline -->
+                    <div class="mt-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-4 h-4 bg-green-500 rounded-full"></div>
+                                    <span class="text-sm font-medium text-gray-900">Order Placed</span>
+                                    <span class="text-sm text-gray-600">{{ order.created_at.strftime('%b %d') }}</span>
+                                </div>
+                                <div class="ml-2 w-0.5 h-16 bg-gray-300 mt-1"></div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-4 h-4 {% if order.status in ['processing', 'shipped', 'delivered'] %}bg-green-500{% else %}bg-gray-300{% endif %} rounded-full"></div>
+                                    <span class="text-sm font-medium {% if order.status in ['processing', 'shipped', 'delivered'] %}text-gray-900{% else %}text-gray-400{% endif %}">Processing</span>
+                                </div>
+                                <div class="ml-2 w-0.5 h-16 bg-gray-300 mt-1"></div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-4 h-4 {% if order.status in ['shipped', 'delivered'] %}bg-green-500{% else %}bg-gray-300{% endif %} rounded-full"></div>
+                                    <span class="text-sm font-medium {% if order.status in ['shipped', 'delivered'] %}text-gray-900{% else %}text-gray-400{% endif %}">Shipped</span>
+                                </div>
+                                <div class="ml-2 w-0.5 h-16 bg-gray-300 mt-1"></div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-4 h-4 {% if order.status == 'delivered' %}bg-green-500{% else %}bg-gray-300{% endif %} rounded-full"></div>
+                                    <span class="text-sm font-medium {% if order.status == 'delivered' %}text-gray-900{% else %}text-gray-400{% endif %}">Delivered</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Items -->
+                <div class="bg-white rounded-lg shadow-md">
+                    <div class="p-6 border-b border-gray-200">
+                        <h2 class="text-lg font-semibold text-gray-900">Order Items ({{ order.order_items|length }})</h2>
+                    </div>
+                    <div class="divide-y divide-gray-200">
+                        {% for item in order.order_items %}
+                        <div class="p-6">
+                            <div class="flex items-center space-x-4">
+                                {% if item.product.featured_image %}
+                                <img src="{{ item.product.featured_image }}" alt="{{ item.product.name }}" class="w-16 h-16 object-cover rounded-lg">
+                                {% else %}
+                                <div class="w-16 h-16 bg-gradient-to-r from-brand-500 to-blue-600 rounded-lg flex items-center justify-center">
+                                    <i data-lucide="flask-conical" class="w-8 h-8 text-white opacity-50"></i>
+                                </div>
+                                {% endif %}
+                                <div class="flex-1">
+                                    <h3 class="font-medium text-gray-900">
+                                        <a href="{{ url_for('main.peptide_detail', slug=item.product.slug) }}" class="hover:text-brand-600">
+                                            {{ item.product.name }}
+                                        </a>
+                                    </h3>
+                                    <p class="text-sm text-gray-600">SKU: {{ item.product.sku }}</p>
+                                    <p class="text-sm text-gray-600">{{ item.quantity }} × ${{ "%.2f"|format(item.price) }}</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-semibold text-gray-900">${{ "%.2f"|format(item.total) }}</p>
+                                    <p class="text-sm text-gray-600">${{ "%.2f"|format(item.price) }} each</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Order Notes -->
+                {% if order.notes %}
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-2">Order Notes</h2>
+                    <p class="text-gray-600">{{ order.notes }}</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Order Summary & Information -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Order Summary -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Order Summary</h2>
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-gray-600">
+                            <span>Subtotal</span>
+                            <span>${{ "%.2f"|format(order.total_amount) }}</span>
+                        </div>
+                        <div class="flex justify-between text-gray-600">
+                            <span>Shipping</span>
+                            <span class="text-green-600">Free</span>
+                        </div>
+                        <div class="flex justify-between text-gray-600">
+                            <span>Tax</span>
+                            <span>$0.00</span>
+                        </div>
+                        <div class="border-t pt-3">
+                            <div class="flex justify-between text-lg font-semibold text-gray-900">
+                                <span>Total</span>
+                                <span>${{ "%.2f"|format(order.total_amount) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shipping Address -->
+                {% if order.shipping_address %}
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Shipping Address</h2>
+                    <div class="text-gray-600">
+                        <p class="font-medium text-gray-900">{{ order.shipping_address.name }}</p>
+                        <p>{{ order.shipping_address.address }}</p>
+                        <p>{{ order.shipping_address.city }}, {{ order.shipping_address.state }} {{ order.shipping_address.postal_code }}</p>
+                        <p>{{ order.shipping_address.country }}</p>
+                        <p class="mt-2">Phone: {{ order.shipping_address.phone }}</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Billing Address -->
+                {% if order.billing_address %}
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Billing Address</h2>
+                    <div class="text-gray-600">
+                        <p class="font-medium text-gray-900">{{ order.billing_address.name }}</p>
+                        <p>{{ order.billing_address.address }}</p>
+                        <p>{{ order.billing_address.city }}, {{ order.billing_address.state }} {{ order.billing_address.postal_code }}</p>
+                        <p>{{ order.billing_address.country }}</p>
+                        <p class="mt-2">Phone: {{ order.billing_address.phone }}</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Payment Information -->
+                {% if order.payments %}
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Payment Information</h2>
+                    {% for payment in order.payments %}
+                    <div class="border-b border-gray-200 pb-3 mb-3 last:border-0 last:pb-0 last:mb-0">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <p class="font-medium text-gray-900">{{ payment.payment_method.title() }}</p>
+                                <p class="text-sm text-gray-600">{{ payment.created_at.strftime('%b %d, %Y') }}</p>
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                {% if payment.status == 'completed' %}bg-green-100 text-green-800
+                                {% elif payment.status == 'failed' %}bg-red-100 text-red-800
+                                {% elif payment.status == 'refunded' %}bg-yellow-100 text-yellow-800
+                                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                {{ payment.status.title() }}
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Amount</span>
+                            <span class="font-medium text-gray-900">${{ "%.2f"|format(payment.amount) }}</span>
+                        </div>
+                        {% if payment.transaction_id %}
+                        <div class="flex justify-between items-center mt-1">
+                            <span class="text-gray-600">Transaction ID</span>
+                            <span class="text-sm text-gray-900">{{ payment.transaction_id }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Customer Support -->
+                <div class="bg-brand-50 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-brand-900 mb-2">Need Help?</h3>
+                    <p class="text-brand-800 mb-4">Have questions about your order? Our support team is here to help.</p>
+                    <a href="#" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg font-medium transition-colors inline-flex items-center space-x-2">
+                        <i data-lucide="headphones" class="w-4 h-4"></i>
+                        <span>Contact Support</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

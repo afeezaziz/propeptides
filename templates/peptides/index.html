@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}Peptides - Propeptides{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-brand-600 to-blue-600 text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Premium Research Peptides</h1>
+            <p class="text-xl mb-8 opacity-90 max-w-3xl mx-auto">
+                High-quality peptides for research purposes. Rigorous testing, guaranteed purity, and fast worldwide shipping.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <div class="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3">
+                    <i data-lucide="check-circle" class="w-5 h-5 inline mr-2"></i>
+                    99%+ Purity
+                </div>
+                <div class="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3">
+                    <i data-lucide="shield-check" class="w-5 h-5 inline mr-2"></i>
+                    Lab Tested
+                </div>
+                <div class="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3">
+                    <i data-lucide="truck" class="w-5 h-5 inline mr-2"></i>
+                    Fast Shipping
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Category Filter -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex flex-wrap gap-2 justify-center">
+            <a href="{{ url_for('main.peptides') }}" class="px-4 py-2 rounded-lg {% if not selected_category %}bg-brand-600 text-white{% else %}bg-white text-gray-700 border border-gray-300 hover:bg-gray-50{% endif %} transition-colors">
+                All Products
+            </a>
+            {% for category in categories %}
+            <a href="{{ url_for('main.peptides', category=category.id) }}" class="px-4 py-2 rounded-lg {% if selected_category == category.id %}bg-brand-600 text-white{% else %}bg-white text-gray-700 border border-gray-300 hover:bg-gray-50{% endif %} transition-colors">
+                {{ category.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="container mx-auto px-4 pb-16">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {% for product in products.items %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow group">
+                {% if product.featured_image %}
+                <div class="relative">
+                    <img src="{{ product.featured_image }}" alt="{{ product.name }}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+                    {% if product.sale_price %}
+                    <span class="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-xs font-semibold">
+                        Sale
+                    </span>
+                    {% endif %}
+                    {% if not product.is_in_stock() %}
+                    <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                        <span class="bg-red-600 text-white px-4 py-2 rounded font-semibold">Out of Stock</span>
+                    </div>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="w-full h-48 bg-gradient-to-r from-brand-500 to-blue-600 flex items-center justify-center">
+                    <i data-lucide="flask-conical" class="w-16 h-16 text-white opacity-50"></i>
+                </div>
+                {% endif %}
+
+                <div class="p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2 hover:text-brand-600 transition-colors">
+                        <a href="{{ url_for('main.peptide_detail', slug=product.slug) }}">{{ product.name }}</a>
+                    </h3>
+
+                    {% if product.short_description %}
+                    <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ product.short_description }}</p>
+                    {% endif %}
+
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center space-x-2">
+                            {% if product.sale_price %}
+                            <span class="text-lg font-bold text-brand-600">${{ "%.2f"|format(product.sale_price) }}</span>
+                            <span class="text-sm text-gray-500 line-through">${{ "%.2f"|format(product.price) }}</span>
+                            {% else %}
+                            <span class="text-lg font-bold text-brand-600">${{ "%.2f"|format(product.price) }}</span>
+                            {% endif %}
+                        </div>
+                        <span class="text-xs text-gray-500">SKU: {{ product.sku }}</span>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm {% if product.stock_quantity > 5 %}text-green-600{% elif product.stock_quantity > 0 %}text-yellow-600{% else %}text-red-600{% endif %}">
+                            {% if product.stock_quantity > 5 %}
+                            In Stock ({{ product.stock_quantity }})
+                            {% elif product.stock_quantity > 0 %}
+                            Low Stock ({{ product.stock_quantity }})
+                            {% else %}
+                            Out of Stock
+                            {% endif %}
+                        </span>
+
+                        {% if current_user.is_authenticated and product.is_in_stock() %}
+                        <form method="POST" action="{{ url_for('main.add_to_cart') }}" class="inline">
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white px-3 py-1 rounded text-sm font-medium transition-colors">
+                                Add to Cart
+                            </button>
+                        </form>
+                        {% elif product.is_in_stock() %}
+                        <a href="{{ url_for('main.login') }}" class="bg-brand-600 hover:bg-brand-700 text-white px-3 py-1 rounded text-sm font-medium transition-colors inline-block">
+                            Login to Buy
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if products.pages > 1 %}
+        <div class="mt-12 flex justify-center">
+            <nav class="flex space-x-2">
+                {% if products.has_prev %}
+                <a href="{{ url_for('main.peptides', page=products.prev_num, category=selected_category) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                    Previous
+                </a>
+                {% endif %}
+
+                {% for page_num in products.iter_pages() %}
+                    {% if page_num %}
+                        {% if page_num != products.page %}
+                        <a href="{{ url_for('main.peptides', page=page_num, category=selected_category) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                            {{ page_num }}
+                        </a>
+                        {% else %}
+                        <span class="px-4 py-2 bg-brand-600 text-white rounded-lg">{{ page_num }}</span>
+                        {% endif %}
+                    {% else %}
+                    <span class="px-4 py-2">...</span>
+                    {% endif %}
+                {% endfor %}
+
+                {% if products.has_next %}
+                <a href="{{ url_for('main.peptides', page=products.next_num, category=selected_category) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                    Next
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Quality Assurance Section -->
+<section class="bg-white py-16">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Our Quality Guarantee</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                Every peptide undergoes rigorous testing and quality control to ensure the highest standards for research purposes.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="microscope" class="w-8 h-8 text-brand-600"></i>
+                </div>
+                <h3 class="font-semibold text-gray-900 mb-2">Lab Tested</h3>
+                <p class="text-sm text-gray-600">Third-party tested for purity and potency</p>
+            </div>
+
+            <div class="text-center">
+                <div class="w-16 h-16 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="certificate" class="w-8 h-8 text-brand-600"></i>
+                </div>
+                <h3 class="font-semibold text-gray-900 mb-2">Certificate of Analysis</h3>
+                <p class="text-sm text-gray-600">Detailed analysis reports available</p>
+            </div>
+
+            <div class="text-center">
+                <div class="w-16 h-16 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="package" class="w-8 h-8 text-brand-600"></i>
+                </div>
+                <h3 class="font-semibold text-gray-900 mb-2">Secure Packaging</h3>
+                <p class="text-sm text-gray-600">Temperature-controlled shipping</p>
+            </div>
+
+            <div class="text-center">
+                <div class="w-16 h-16 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="headphones" class="w-8 h-8 text-brand-600"></i>
+                </div>
+                <h3 class="font-semibold text-gray-900 mb-2">Expert Support</h3>
+                <p class="text-sm text-gray-600">24/7 customer support available</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

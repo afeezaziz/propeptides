@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - Propeptides{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50">
+    <div class="container mx-auto px-4 py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <!-- Product Images -->
+            <div class="space-y-4">
+                {% if product.featured_image %}
+                <div class="bg-white rounded-lg overflow-hidden">
+                    <img src="{{ product.featured_image }}" alt="{{ product.name }}" class="w-full h-96 object-cover" id="main-image">
+                </div>
+                {% else %}
+                <div class="bg-white rounded-lg h-96 flex items-center justify-center">
+                    <div class="w-32 h-32 bg-gradient-to-r from-brand-500 to-blue-600 rounded-full flex items-center justify-center">
+                        <i data-lucide="flask-conical" class="w-16 h-16 text-white"></i>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if product.images %}
+                <div class="grid grid-cols-4 gap-2">
+                    {% for image in product.images[:4] %}
+                    <button onclick="changeImage('{{ image }}')" class="bg-white rounded p-2 hover:shadow-md transition-shadow">
+                        <img src="{{ image }}" alt="Product image" class="w-full h-20 object-cover">
+                    </button>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Product Details -->
+            <div class="space-y-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ product.name }}</h1>
+                    <p class="text-gray-600">SKU: {{ product.sku }}</p>
+                </div>
+
+                <!-- Price -->
+                <div class="flex items-center space-x-4">
+                    {% if product.sale_price %}
+                    <div class="flex items-center space-x-2">
+                        <span class="text-3xl font-bold text-brand-600">${{ "%.2f"|format(product.sale_price) }}</span>
+                        <span class="text-lg text-gray-500 line-through">${{ "%.2f"|format(product.price) }}</span>
+                        <span class="bg-red-100 text-red-800 text-sm font-medium px-2.5 py-0.5 rounded">
+                            Save ${{ "%.2f"|format(product.price - product.sale_price) }}
+                        </span>
+                    </div>
+                    {% else %}
+                    <span class="text-3xl font-bold text-brand-600">${{ "%.2f"|format(product.price) }}</span>
+                    {% endif %}
+                </div>
+
+                <!-- Stock Status -->
+                <div class="flex items-center space-x-2">
+                    {% if product.is_in_stock() %}
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                        <i data-lucide="check-circle" class="w-4 h-4 mr-1"></i>
+                        In Stock ({{ product.stock_quantity }} available)
+                    </span>
+                    {% else %}
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                        <i data-lucide="x-circle" class="w-4 h-4 mr-1"></i>
+                        Out of Stock
+                    </span>
+                    {% endif %}
+                </div>
+
+                <!-- Short Description -->
+                {% if product.short_description %}
+                <div class="bg-white rounded-lg p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2">Quick Overview</h3>
+                    <p class="text-gray-600">{{ product.short_description }}</p>
+                </div>
+                {% endif %}
+
+                <!-- Add to Cart Form -->
+                {% if current_user.is_authenticated and product.is_in_stock() %}
+                <form method="POST" action="{{ url_for('main.add_to_cart') }}" class="space-y-4">
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                        <input type="number" name="quantity" value="1" min="1" max="{{ product.stock_quantity }}" class="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-brand-500 focus:border-brand-500">
+                    </div>
+
+                    <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2">
+                        <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                        <span>Add to Cart</span>
+                    </button>
+                </form>
+                {% elif product.is_in_stock() %}
+                <a href="{{ url_for('main.login') }}" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 inline-block">
+                    <i data-lucide="log-in" class="w-5 h-5"></i>
+                    <span>Login to Purchase</span>
+                </a>
+                {% endif %}
+
+                <!-- Product Features -->
+                <div class="bg-white rounded-lg p-4 space-y-3">
+                    <h3 class="font-semibold text-gray-900">Product Features</h3>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center">
+                            <i data-lucide="check" class="w-4 h-4 text-green-500 mr-2"></i>
+                            High purity (>99%)
+                        </li>
+                        <li class="flex items-center">
+                            <i data-lucide="check" class="w-4 h-4 text-green-500 mr-2"></i>
+                            Lab tested and verified
+                        </li>
+                        <li class="flex items-center">
+                            <i data-lucide="check" class="w-4 h-4 text-green-500 mr-2"></i>
+                            Certificate of analysis included
+                        </li>
+                        <li class="flex items-center">
+                            <i data-lucide="check" class="w-4 h-4 text-green-500 mr-2"></i>
+                            Secure packaging
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Description -->
+        <div class="mt-12 bg-white rounded-lg p-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Product Description</h2>
+            <div class="prose prose-lg max-w-none">
+                {{ product.description | safe }}
+            </div>
+        </div>
+
+        <!-- Related Products -->
+        {% if related_products %}
+        <div class="mt-16">
+            <h2 class="text-2xl font-bold text-gray-900 mb-8">Related Products</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {% for related in related_products %}
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                    {% if related.featured_image %}
+                    <img src="{{ related.featured_image }}" alt="{{ related.name }}" class="w-full h-32 object-cover">
+                    {% else %}
+                    <div class="w-full h-32 bg-gradient-to-r from-brand-500 to-blue-600 flex items-center justify-center">
+                        <i data-lucide="flask-conical" class="w-8 h-8 text-white opacity-50"></i>
+                    </div>
+                    {% endif %}
+                    <div class="p-4">
+                        <h3 class="font-medium text-gray-900 mb-2">{{ related.name }}</h3>
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-brand-600">${{ "%.2f"|format(related.price) }}</span>
+                            <a href="{{ url_for('main.peptide_detail', slug=related.slug) }}" class="text-brand-600 hover:text-brand-700">
+                                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function changeImage(imageUrl) {
+    document.getElementById('main-image').src = imageUrl;
+}
+</script>
+{% endblock %}

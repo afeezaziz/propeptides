@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} - Propeptides{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50">
+    <div class="container mx-auto px-4 py-12">
+        <article class="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+            {% if post.featured_image %}
+            <img src="{{ post.featured_image }}" alt="{{ post.title }}" class="w-full h-64 md:h-96 object-cover">
+            {% endif %}
+
+            <div class="p-6 md:p-8">
+                <div class="flex items-center text-sm text-gray-500 mb-4">
+                    <span>{{ post.created_at.strftime('%B %d, %Y') }}</span>
+                    <span class="mx-2">•</span>
+                    <span>By {{ post.author.name }}</span>
+                    <span class="mx-2">•</span>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-100 text-brand-800">
+                        {{ post.status.title() }}
+                    </span>
+                </div>
+
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">{{ post.title }}</h1>
+
+                {% if post.excerpt %}
+                <p class="text-lg text-gray-600 mb-8 italic">{{ post.excerpt }}</p>
+                {% endif %}
+
+                <div class="prose prose-lg max-w-none">
+                    {{ post.content | safe }}
+                </div>
+
+                <!-- Article Meta -->
+                <div class="mt-12 pt-8 border-t border-gray-200">
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                        <div class="flex items-center space-x-4">
+                            {% if post.author.picture %}
+                            <img src="{{ post.author.picture }}" alt="{{ post.author.name }}" class="w-12 h-12 rounded-full">
+                            {% else %}
+                            <div class="w-12 h-12 bg-brand-600 rounded-full flex items-center justify-center">
+                                <i data-lucide="user" class="w-6 h-6 text-white"></i>
+                            </div>
+                            {% endif %}
+                            <div>
+                                <p class="font-medium text-gray-900">{{ post.author.name }}</p>
+                                <p class="text-sm text-gray-500">Researcher</p>
+                            </div>
+                        </div>
+
+                        <div class="flex space-x-4">
+                            <button class="text-gray-500 hover:text-brand-600 transition-colors">
+                                <i data-lucide="share-2" class="w-5 h-5"></i>
+                            </button>
+                            <button class="text-gray-500 hover:text-brand-600 transition-colors">
+                                <i data-lucide="bookmark" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Related Posts -->
+        <div class="mt-12">
+            <h2 class="text-2xl font-bold text-gray-900 mb-8">Related Articles</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {% for i in range(3) %}
+                <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                    <div class="w-full h-32 bg-gradient-to-r from-brand-500 to-blue-600 rounded-lg mb-4 flex items-center justify-center">
+                        <i data-lucide="file-text" class="w-8 h-8 text-white opacity-50"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 mb-2">Related Article Title</h3>
+                    <p class="text-sm text-gray-600 mb-4">Brief excerpt of related article content...</p>
+                    <a href="#" class="text-brand-600 hover:text-brand-700 text-sm font-medium">Read More</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
