@@ -76,14 +76,14 @@
                         <div class="flex items-center space-x-3">
                             <div class="relative group">
                                 <button class="flex items-center space-x-2 text-gray-700 hover:text-brand-600 transition-colors">
-                                    {% if session.user.picture %}
-                                        <img src="{{ session.user.picture }}" alt="Profile" class="w-8 h-8 rounded-full">
+                                    {% if current_user.picture %}
+                                        <img src="{{ current_user.picture }}" alt="Profile" class="w-8 h-8 rounded-full">
                                     {% else %}
                                         <div class="w-8 h-8 bg-brand-600 rounded-full flex items-center justify-center">
                                             <i data-lucide="user" class="w-4 h-4 text-white"></i>
                                         </div>
                                     {% endif %}
-                                    <span class="text-sm font-medium">{{ session.user.name }}</span>
+                                    <span class="text-sm font-medium">{{ current_user.name }}</span>
                                     <i data-lucide="chevron-down" class="w-4 h-4"></i>
                                 </button>
                                 <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 hidden group-hover:block">
@@ -127,14 +127,14 @@
                         <a href="#products" class="text-brand-600 hover:text-brand-700 font-medium">Shop</a>
                         {% if current_user.is_authenticated %}
                             <div class="flex items-center space-x-2 py-2">
-                                {% if session.user.picture %}
-                                    <img src="{{ session.user.picture }}" alt="Profile" class="w-8 h-8 rounded-full">
+                                {% if current_user.picture %}
+                                    <img src="{{ current_user.picture }}" alt="Profile" class="w-8 h-8 rounded-full">
                                 {% else %}
                                     <div class="w-8 h-8 bg-brand-600 rounded-full flex items-center justify-center">
                                         <i data-lucide="user" class="w-4 h-4 text-white"></i>
                                     </div>
                                 {% endif %}
-                                <span class="text-sm font-medium text-gray-700">{{ session.user.name }}</span>
+                                <span class="text-sm font-medium text-gray-700">{{ current_user.name }}</span>
                             </div>
                             <a href="{{ url_for('dashboard') }}" class="text-brand-600 hover:text-brand-700 font-medium">
                                 <i data-lucide="user" class="w-4 h-4 inline mr-2"></i> Dashboard
