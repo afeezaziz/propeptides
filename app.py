@@ -117,7 +117,24 @@ def post_detail(slug):
     # Get related posts based on content similarity and tags
     related_posts = get_related_posts(post, limit=3)
 
-    return render_template('posts/detail.html', post=post, related_posts=related_posts)
+    # Previous and next posts based on publication date
+    prev_post = Post.query.filter(
+        Post.status == 'published',
+        Post.created_at < post.created_at
+    ).order_by(Post.created_at.desc()).first()
+
+    next_post = Post.query.filter(
+        Post.status == 'published',
+        Post.created_at > post.created_at
+    ).order_by(Post.created_at.asc()).first()
+
+    return render_template(
+        'posts/detail.html',
+        post=post,
+        related_posts=related_posts,
+        prev_post=prev_post,
+        next_post=next_post
+    )
 
 def get_related_posts(current_post, limit=3):
     """Get related posts based on content similarity"""

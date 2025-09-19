@@ -4,55 +4,87 @@
 
 {% block head %}
 {{ super() }}
+<meta name="description" content="{{ post.meta_description or (post.excerpt or (post.content | excerpt(160))) }}">
+<link rel="canonical" href="{{ request.url }}">
+<meta property="og:type" content="article">
+<meta property="og:title" content="{{ post.meta_title or post.title }}">
+<meta property="og:description" content="{{ post.meta_description or (post.excerpt or (post.content | excerpt(160))) }}">
+<meta property="og:url" content="{{ request.url }}">
+{% if post.featured_image %}
+<meta property="og:image" content="{{ post.featured_image }}">
+<meta name="twitter:card" content="summary_large_image">
+{% else %}
+<meta name="twitter:card" content="summary">
+{% endif %}
+<meta name="twitter:title" content="{{ post.meta_title or post.title }}">
+<meta name="twitter:description" content="{{ post.meta_description or (post.excerpt or (post.content | excerpt(160))) }}">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": {{ (post.meta_title or post.title) | tojson }},
+  "description": {{ (post.meta_description or (post.excerpt or (post.content | excerpt(160)))) | tojson }},
+  "datePublished": "{{ post.created_at.isoformat() }}",
+  "dateModified": "{{ post.updated_at.isoformat() if post.updated_at else post.created_at.isoformat() }}",
+  "author": {
+    "@type": "Person",
+    "name": {{ post.author.name | tojson }}
+  },
+  "image": {{ (post.featured_image or '') | tojson }},
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": {{ request.url | tojson }}
+  }
+}
+</script>
+
 <style>
-    .prose h1 { @apply text-3xl font-bold text-gray-900 mb-6 mt-8; }
-    .prose h2 { @apply text-2xl font-semibold text-gray-800 mb-4 mt-6; }
-    .prose h3 { @apply text-xl font-medium text-gray-700 mb-3 mt-5; }
-    .prose h4 { @apply text-lg font-medium text-gray-600 mb-2 mt-4; }
-    .prose p { @apply text-gray-700 mb-4 leading-relaxed; }
-    .prose ul { @apply list-disc list-inside mb-4 space-y-2; }
-    .prose ol { @apply list-decimal list-inside mb-4 space-y-2; }
-    .prose li { @apply text-gray-700; }
-    .prose blockquote { @apply border-l-4 border-brand-300 pl-4 italic text-gray-600 mb-4 bg-brand-50 py-2; }
-    .prose code { @apply bg-gray-100 text-brand-700 px-1 py-0.5 rounded text-sm font-mono; }
-    .prose pre { @apply bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto mb-4; }
-    .prose pre code { @apply bg-transparent text-gray-100 p-0; }
-    .prose table { @apply w-full border-collapse mb-4; }
-    .prose th { @apply bg-gray-100 border border-gray-300 px-4 py-2 text-left font-semibold; }
-    .prose td { @apply border border-gray-300 px-4 py-2; }
-    .prose a { @apply text-brand-600 hover:text-brand-700 underline; }
+    /* Typographic refinements without Tailwind's @apply */
+    .prose h1 { font-size: 1.875rem; line-height: 2.25rem; font-weight: 700; color: #111827; margin: 2rem 0 1.5rem; }
+    .prose h2 { font-size: 1.5rem; line-height: 2rem; font-weight: 600; color: #1f2937; margin: 1.5rem 0 1rem; }
+    .prose h3 { font-size: 1.25rem; line-height: 1.75rem; font-weight: 600; color: #374151; margin: 1.25rem 0 0.75rem; }
+    .prose h4 { font-size: 1.125rem; line-height: 1.6rem; font-weight: 600; color: #4b5563; margin: 1rem 0 0.5rem; }
+    .prose p { color: #374151; margin-bottom: 1rem; line-height: 1.8; }
+    .prose ul { list-style: disc inside; margin-bottom: 1rem; }
+    .prose ol { list-style: decimal inside; margin-bottom: 1rem; }
+    .prose li { color: #374151; margin: 0.25rem 0; }
+    .prose blockquote { border-left: 4px solid #93c5fd; padding-left: 1rem; font-style: italic; color: #4b5563; margin-bottom: 1rem; background: #eff6ff; padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .prose code { background: #f3f4f6; color: #1d4ed8; padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-size: 0.875rem; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .prose pre { background: #111827; color: #f9fafb; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1rem; }
+    .prose pre code { background: transparent; color: inherit; padding: 0; }
+    .prose table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+    .prose th { background: #f3f4f6; border: 1px solid #d1d5db; padding: 0.5rem 1rem; text-align: left; font-weight: 600; }
+    .prose td { border: 1px solid #d1d5db; padding: 0.5rem 1rem; }
+    .prose a { color: #2563eb; text-decoration: underline; }
 
-    .table-of-contents {
-        @apply sticky top-24 bg-white rounded-lg shadow-sm border border-gray-200 p-4;
-    }
-    .table-of-contents h3 {
-        @apply text-lg font-semibold text-gray-900 mb-3 pb-2 border-b border-gray-200;
-    }
-    .table-of-contents ul {
-        @apply space-y-1;
-    }
-    .table-of-contents li {
-        @apply text-sm;
-    }
-    .table-of-contents a {
-        @apply text-gray-600 hover:text-brand-600 transition-colors no-underline;
-    }
+    .table-of-contents { position: sticky; top: 6rem; background: #ffffff; border-radius: 0.75rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border: 1px solid #e5e7eb; padding: 1rem; }
+    .table-of-contents h3 { font-size: 1.125rem; font-weight: 600; color: #111827; margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e5e7eb; }
+    .table-of-contents ul { margin: 0; padding: 0; list-style: none; }
+    .table-of-contents li { font-size: 0.875rem; margin: 0.375rem 0; }
+    .table-of-contents a { color: #4b5563; text-decoration: none; transition: color 0.2s ease; }
+    .table-of-contents a:hover { color: #2563eb; }
 
-    .author-card {
-        @apply bg-gradient-to-r from-brand-50 to-blue-50 rounded-xl p-6 border border-brand-100;
-    }
+    .author-card { background: linear-gradient(90deg, #eff6ff, #ebf2ff); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid #bfdbfe; }
 
-    .related-post-card {
-        @apply group block bg-white rounded-lg border border-gray-200 hover:border-brand-300 hover:shadow-md transition-all duration-200 overflow-hidden;
-    }
-    .related-post-card img {
-        @apply w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300;
-    }
+    .related-post-card { display: block; background: #ffffff; border-radius: 0.5rem; border: 1px solid #e5e7eb; transition: all 0.2s ease; overflow: hidden; }
+    .related-post-card:hover { border-color: #93c5fd; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+    .related-post-card img { width: 100%; height: 12rem; object-fit: cover; transition: transform 0.3s ease; }
+    .related-post-card:hover img { transform: scale(1.05); }
+
+    /* Reading progress bar */
+    #reading-progress { position: fixed; top: 0; left: 0; width: 100%; height: 3px; background: transparent; z-index: 60; }
+    #reading-progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #2563eb, #1e40af); transition: width 0.1s ease; }
+
+    /* Codehilite minimal tweaks */
+    .codehilite { background: #0b1220; color: #e5e7eb; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="bg-gray-50 min-h-screen">
+    <!-- Reading progress bar -->
+    <div id="reading-progress"><div id="reading-progress-bar"></div></div>
     <!-- Hero Header -->
     <div class="bg-gradient-to-r from-brand-600 to-blue-700 text-white">
         <div class="container mx-auto px-4 py-16">
@@ -158,7 +190,7 @@
                                             <i data-lucide="share-2" class="w-4 h-4 mr-2"></i>
                                             Share
                                         </button>
-                                        <button onclick="copyLink()" class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors">
+                                        <button onclick="copyLink(event)" class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors">
                                             <i data-lucide="link" class="w-4 h-4 mr-2"></i>
                                             Copy Link
                                         </button>
@@ -198,6 +230,26 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Prev/Next Navigation -->
+                    {% if prev_post or next_post %}
+                    <nav class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {% if prev_post %}
+                        <a href="{{ url_for('post_detail', slug=prev_post.slug) }}" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-brand-300 hover:shadow transition">
+                            <div class="text-xs uppercase tracking-wide text-gray-500 mb-2 flex items-center"><i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Previous article</div>
+                            <div class="text-gray-900 font-semibold line-clamp-2">{{ prev_post.title }}</div>
+                            <div class="mt-1 text-sm text-gray-500">{{ prev_post.created_at.strftime('%B %d, %Y') }} • {{ prev_post.content | reading_time }}</div>
+                        </a>
+                        {% endif %}
+                        {% if next_post %}
+                        <a href="{{ url_for('post_detail', slug=next_post.slug) }}" class="block bg-white border border-gray-200 rounded-lg p-5 hover:border-brand-300 hover:shadow transition text-right">
+                            <div class="text-xs uppercase tracking-wide text-gray-500 mb-2 flex items-center justify-end">Next article <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i></div>
+                            <div class="text-gray-900 font-semibold line-clamp-2">{{ next_post.title }}</div>
+                            <div class="mt-1 text-sm text-gray-500">{{ next_post.created_at.strftime('%B %d, %Y') }} • {{ next_post.content | reading_time }}</div>
+                        </a>
+                        {% endif %}
+                    </nav>
+                    {% endif %}
                 </div>
 
                 <!-- Sidebar -->
@@ -205,13 +257,7 @@
                     <!-- Table of Contents (would be generated from markdown) -->
                     <div class="table-of-contents mb-8">
                         <h3>Table of Contents</h3>
-                        <ul>
-                            <li><a href="#introduction" class="hover:text-brand-600">Introduction</a></li>
-                            <li><a href="#mechanism" class="hover:text-brand-600">Mechanism of Action</a></li>
-                            <li><a href="#clinical-applications" class="hover:text-brand-600">Clinical Applications</a></li>
-                            <li><a href="#research" class="hover:text-brand-600">Research & Future</a></li>
-                            <li><a href="#conclusion" class="hover:text-brand-600">Conclusion</a></li>
-                        </ul>
+                        <ul id="toc-list"></ul>
                     </div>
 
                     <!-- Newsletter Signup -->
@@ -281,64 +327,100 @@
         </div>
     </div>
     {% endif %}
-</div>
+    </div>
 
-<script>
-    // Initialize Lucide icons
-    lucide.createIcons();
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
 
-    // Smooth scrolling for table of contents
-    document.querySelectorAll('.table-of-contents a').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href').substring(1);
-            const targetElement = document.getElementById(targetId);
-            if (targetElement) {
-                targetElement.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
-
-    // Share functionality
-    function shareArticle() {
-        if (navigator.share) {
-            navigator.share({
-                title: '{{ post.title }}',
-                text: '{{ post.excerpt or "Check out this article on Propeptides" }}',
-                url: window.location.href
+        // Smooth scrolling for any pre-existing TOC anchors
+        document.querySelectorAll('.table-of-contents a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
             });
-        } else {
-            // Fallback - copy to clipboard
-            copyLink();
-        }
-    }
-
-    function copyLink() {
-        navigator.clipboard.writeText(window.location.href).then(() => {
-            // Show success message
-            const button = event.target.closest('button');
-            const originalText = button.innerHTML;
-            button.innerHTML = '<i data-lucide="check" class="w-4 h-4 mr-2"></i>Copied!';
-            button.classList.add('bg-green-100', 'text-green-700');
-
-            setTimeout(() => {
-                button.innerHTML = originalText;
-                button.classList.remove('bg-green-100', 'text-green-700');
-                lucide.createIcons();
-            }, 2000);
         });
-    }
 
-    // Add line numbers to code blocks
-    document.querySelectorAll('pre code').forEach((block) => {
-        const lines = block.textContent.split('\n');
-        const numberedLines = lines.map((line, index) => {
-            return `<span class="line-number" data-line="${index + 1}">${line}</span>`;
-        }).join('\n');
-        block.innerHTML = numberedLines;
-    });
-</script>
-{% endblock %}
+        // Share functionality
+        function shareArticle() {
+            if (navigator.share) {
+                navigator.share({
+                    title: '{{ post.title }}',
+                    text: '{{ post.excerpt or "Check out this article on Propeptides" }}',
+                    url: window.location.href
+                });
+            } else {
+                copyLink(event);
+            }
+        }
+
+        function copyLink(e) {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const button = e && e.target ? e.target.closest('button') : document.querySelector('[onclick^="copyLink"]');
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i data-lucide="check" class="w-4 h-4 mr-2"></i>Copied!';
+                button.classList.add('bg-green-100', 'text-green-700');
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.classList.remove('bg-green-100', 'text-green-700');
+                    lucide.createIcons();
+                }, 2000);
+            });
+        }
+
+        // Add line numbers to code blocks
+        document.querySelectorAll('pre code').forEach((block) => {
+            const lines = block.textContent.split('\n');
+            const numberedLines = lines.map((line, index) => {
+                return `<span class="line-number" data-line="${index + 1}">${line}</span>`;
+            }).join('\n');
+            block.innerHTML = numberedLines;
+        });
+
+        // Dynamic Table of Contents from headings
+        (function generateTOC(){
+            const articleEl = document.querySelector('.prose');
+            const toc = document.getElementById('toc-list');
+            if (!articleEl || !toc) return;
+            toc.innerHTML = '';
+            const headings = articleEl.querySelectorAll('h2, h3');
+            headings.forEach((h, i) => {
+                if (!h.id) {
+                    h.id = (h.textContent || `section-${i}`).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-');
+                }
+                const li = document.createElement('li');
+                if (h.tagName === 'H3') li.style.marginLeft = '0.75rem';
+                const a = document.createElement('a');
+                a.href = `#${h.id}`;
+                a.textContent = h.textContent;
+                a.addEventListener('click', function(e){
+                    e.preventDefault();
+                    document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    history.replaceState(null, '', `#${h.id}`);
+                });
+                li.appendChild(a);
+                toc.appendChild(li);
+            });
+        })();
+
+        // Reading progress indicator
+        (function readingProgress(){
+            const bar = document.getElementById('reading-progress-bar');
+            const articleContainer = document.querySelector('article');
+            if (!bar || !articleContainer) return;
+            function update(){
+                const total = articleContainer.scrollHeight - window.innerHeight;
+                const scrolled = Math.max(0, window.scrollY - (articleContainer.offsetTop));
+                const pct = total > 0 ? Math.min(1, scrolled / total) : 0;
+                bar.style.width = (pct * 100) + '%';
+            }
+            window.addEventListener('scroll', update, { passive: true });
+            window.addEventListener('resize', update);
+            update();
+        })();
+    </script>
+    {% endblock %}
