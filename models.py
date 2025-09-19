@@ -113,3 +113,49 @@ class Payment(db.Model):
     payment_data = db.Column(db.JSON)  # Store payment gateway response
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+# Tracker Models
+class PeptideCycle(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
+    name = db.Column(db.String(200), nullable=False)
+    start_date = db.Column(db.Date, nullable=False)
+    end_date = db.Column(db.Date, nullable=True)
+    target_dosage = db.Column(db.Numeric(10, 2), nullable=True)  # mg per dose
+    frequency = db.Column(db.String(50), nullable=True)  # daily, weekly, etc.
+    status = db.Column(db.String(20), default='active')  # active, completed, paused
+    notes = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    user = db.relationship('User', backref='peptide_cycles')
+    product = db.relationship('Product')
+    dosage_logs = db.relationship('DosageLog', backref='cycle', lazy=True, cascade='all, delete-orphan')
+    progress_entries = db.relationship('ProgressEntry', backref='cycle', lazy=True, cascade='all, delete-orphan')
+
+class DosageLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    cycle_id = db.Column(db.Integer, db.ForeignKey('peptide_cycle.id'), nullable=False)
+    dosage_amount = db.Column(db.Numeric(10, 2), nullable=False)  # mg
+    injection_time = db.Column(db.DateTime, nullable=False)
+    injection_site = db.Column(db.String(100), nullable=True)  # stomach, thigh, etc.
+    notes = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    cycle = db.relationship('PeptideCycle')
+
+class ProgressEntry(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    cycle_id = db.Column(db.Integer, db.ForeignKey('peptide_cycle.id'), nullable=False)
+    entry_date = db.Column(db.Date, nullable=False)
+    weight = db.Column(db.Numeric(6, 2), nullable=True)  # kg
+    body_fat_percentage = db.Column(db.Numeric(5, 2), nullable=True)
+    muscle_mass = db.Column(db.Numeric(6, 2), nullable=True)
+    notes = db.Column(db.Text)
+    energy_level = db.Column(db.Integer, nullable=True)  # 1-10 scale
+    mood = db.Column(db.String(50), nullable=True)  # excellent, good, average, poor
+    side_effects = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    cycle = db.relationship('PeptideCycle')
