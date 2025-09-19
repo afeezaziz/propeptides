@@ -28,8 +28,50 @@
         </div>
     </section>
 
-    <!-- Category Filter -->
+    <!-- Breadcrumbs -->
+    <nav class="container mx-auto px-4 py-4 text-sm text-gray-600" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-2">
+            <li><a href="{{ url_for('index') }}" class="hover:text-brand-600">Home</a></li>
+            <li class="text-gray-400">/</li>
+            <li class="text-gray-900 font-medium">Peptides</li>
+        </ol>
+    </nav>
+
+    <!-- Search, Sort, and Category Filter -->
     <div class="container mx-auto px-4 py-8">
+        <!-- Search + Sort Bar -->
+        <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center mb-6">
+            {% if selected_category %}
+                <input type="hidden" name="category" value="{{ selected_category }}">
+            {% endif %}
+            <div class="md:col-span-2">
+                <label for="search-peptides" class="sr-only">Search peptides</label>
+                <input id="search-peptides" type="search" name="q" value="{{ q or '' }}" placeholder="Search peptides..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-brand-500 focus:border-brand-500" />
+            </div>
+            <div>
+                <label for="sort" class="sr-only">Sort</label>
+                <select id="sort" name="sort" class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white focus:ring-brand-500 focus:border-brand-500" onchange="this.form.submit()">
+                    <option value="new" {{ 'selected' if sort == 'new' else '' }}>Newest</option>
+                    <option value="price_low" {{ 'selected' if sort == 'price_low' else '' }}>Price: Low to High</option>
+                    <option value="price_high" {{ 'selected' if sort == 'price_high' else '' }}>Price: High to Low</option>
+                    <option value="name_asc" {{ 'selected' if sort == 'name_asc' else '' }}>Name: A to Z</option>
+                    <option value="name_desc" {{ 'selected' if sort == 'name_desc' else '' }}>Name: Z to A</option>
+                </select>
+            </div>
+        </form>
+
+        <!-- Results count -->
+        <div class="flex items-center justify-between mb-4 text-sm text-gray-600">
+            <div>
+                {% if products.total > 0 %}
+                    Showing {{ (products.page - 1) * products.per_page + 1 }}–{{ products.page * products.per_page if products.page * products.per_page < products.total else products.total }} of {{ products.total }} results
+                {% else %}
+                    No results
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Category Chips -->
         <div class="flex flex-wrap gap-2 justify-center">
             <a href="{{ url_for('peptides') }}" class="px-4 py-2 rounded-lg {% if not selected_category %}bg-brand-600 text-white{% else %}bg-white text-gray-700 border border-gray-300 hover:bg-gray-50{% endif %} transition-colors">
                 All Products
@@ -44,6 +86,18 @@
 
     <!-- Products Grid -->
     <div class="container mx-auto px-4 pb-16">
+        {% if products.items|length == 0 %}
+        <div class="bg-white border border-gray-200 rounded-xl p-10 text-center">
+            <div class="mx-auto w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                <i data-lucide="search" class="w-6 h-6 text-gray-500"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">No products found</h3>
+            <p class="text-gray-600 mb-4">Try adjusting your search or filters, or browse all products.</p>
+            <a href="{{ url_for('peptides') }}" class="inline-flex items-center px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-medium transition-colors">
+                Clear filters
+            </a>
+        </div>
+        {% else %}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {% for product in products.items %}
             <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow group">
@@ -117,13 +171,14 @@
             </div>
             {% endfor %}
         </div>
+        {% endif %}
 
         <!-- Pagination -->
         {% if products.pages > 1 %}
         <div class="mt-12 flex justify-center">
             <nav class="flex space-x-2">
                 {% if products.has_prev %}
-                <a href="{{ url_for('peptides', page=products.prev_num, category=selected_category) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                <a href="{{ url_for('peptides', page=products.prev_num, category=selected_category, q=q, sort=sort) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                     Previous
                 </a>
                 {% endif %}
@@ -131,7 +186,7 @@
                 {% for page_num in products.iter_pages() %}
                     {% if page_num %}
                         {% if page_num != products.page %}
-                        <a href="{{ url_for('peptides', page=page_num, category=selected_category) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                        <a href="{{ url_for('peptides', page=page_num, category=selected_category, q=q, sort=sort) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                             {{ page_num }}
                         </a>
                         {% else %}
@@ -143,7 +198,7 @@
                 {% endfor %}
 
                 {% if products.has_next %}
-                <a href="{{ url_for('peptides', page=products.next_num, category=selected_category) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                <a href="{{ url_for('peptides', page=products.next_num, category=selected_category, q=q, sort=sort) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                     Next
                 </a>
                 {% endif %}

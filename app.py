@@ -10,6 +10,7 @@ import secrets
 import uuid
 import pymysql
 from datetime import datetime
+from sqlalchemy import or_, func
 
 # Load environment variables
 load_dotenv()
@@ -39,6 +40,21 @@ app.jinja_env.filters['reading_time'] = reading_time_filter
 app.jinja_env.filters['truncate'] = truncate_filter
 
 login_manager.init_app(app)
+
+# Global template context (inject cart count into all templates)
+@app.context_processor
+def inject_cart_count():
+    try:
+        if current_user.is_authenticated:
+            # Sum of quantities in the cart for the current user
+            count = db.session.query(func.coalesce(db.func.sum(CartItem.quantity), 0)).filter(
+                CartItem.user_id == current_user.id
+            ).scalar() or 0
+            return {"cart_count": int(count)}
+    except Exception:
+        # Be resilient if DB not reachable
+        pass
+    return {"cart_count": 0}
 
 
 # Helper functions
@@ -222,17 +238,40 @@ def has_similar_theme(content1, content2):
 def peptides():
     page = request.args.get('page', 1, type=int)
     category_id = request.args.get('category', type=int)
+    q = request.args.get('q', type=str, default='')
+    sort = request.args.get('sort', type=str, default='new')  # new, price_low, price_high, name_asc, name_desc
 
     query = Product.query.filter_by(status='active')
     if category_id:
         query = query.filter_by(category_id=category_id)
 
-    products = query.order_by(Product.created_at.desc()).paginate(
-        page=page, per_page=12, error_out=False
-    )
+    if q:
+        like = f"%{q}%"
+        query = query.filter(or_(Product.name.ilike(like), Product.description.ilike(like)))
+
+    # Sorting
+    if sort == 'price_low':
+        query = query.order_by(func.coalesce(Product.sale_price, Product.price).asc())
+    elif sort == 'price_high':
+        query = query.order_by(func.coalesce(Product.sale_price, Product.price).desc())
+    elif sort == 'name_asc':
+        query = query.order_by(Product.name.asc())
+    elif sort == 'name_desc':
+        query = query.order_by(Product.name.desc())
+    else:
+        query = query.order_by(Product.created_at.desc())
+
+    products = query.paginate(page=page, per_page=12, error_out=False)
     categories = Category.query.all()
 
-    return render_template('peptides/index.html', products=products, categories=categories, selected_category=category_id)
+    return render_template(
+        'peptides/index.html',
+        products=products,
+        categories=categories,
+        selected_category=category_id,
+        q=q,
+        sort=sort,
+    )
 
 @app.route('/peptides/<slug>')
 def peptide_detail(slug):

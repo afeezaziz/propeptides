@@ -80,6 +80,16 @@
                 <!-- Desktop CTA -->
                 <div class="hidden md:flex items-center space-x-4">
                     <a href="{{ url_for('peptides') }}" class="text-brand-600 hover:text-brand-700 font-medium">Shop</a>
+                    <!-- Cart button -->
+                    <a href="{% if current_user.is_authenticated %}{{ url_for('cart') }}{% else %}{{ url_for('login') }}{% endif %}"
+                       class="relative text-gray-700 hover:text-brand-600 transition-colors"
+                       aria-label="Cart">
+                        <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                        {% if cart_count and cart_count > 0 %}
+                        <span class="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] leading-none font-semibold px-1.5 py-0.5 rounded-full"
+                              aria-label="{{ cart_count }} items in cart">{{ cart_count }}</span>
+                        {% endif %}
+                    </a>
                     {% if current_user.is_authenticated %}
                         <div class="flex items-center space-x-3">
                             <div class="relative">
@@ -94,9 +104,18 @@
                                     <span class="text-sm font-medium">{{ current_user.name }}</span>
                                     <i data-lucide="chevron-down" class="w-4 h-4"></i>
                                 </button>
-                                <div id="profile-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 hidden" role="menu" aria-labelledby="profile-menu-button">
+                                <div id="profile-menu" class="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-lg border border-gray-200 py-2 hidden" role="menu" aria-labelledby="profile-menu-button">
                                     <a href="{{ url_for('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
                                         <i data-lucide="user" class="w-4 h-4 inline mr-2"></i> Dashboard
+                                    </a>
+                                    <a href="{{ url_for('orders') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                                        <i data-lucide="receipt" class="w-4 h-4 inline mr-2"></i> Orders
+                                    </a>
+                                    <a href="{{ url_for('payments') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                                        <i data-lucide="credit-card" class="w-4 h-4 inline mr-2"></i> Payments
+                                    </a>
+                                    <a href="{{ url_for('cart') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                                        <i data-lucide="shopping-cart" class="w-4 h-4 inline mr-2"></i> Cart
                                     </a>
                                     <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
                                         <i data-lucide="log-out" class="w-4 h-4 inline mr-2"></i> Logout
@@ -105,10 +124,15 @@
                             </div>
                         </div>
                     {% else %}
-                        <a href="{{ url_for('login') }}" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2">
-                            <i data-lucide="log-in" class="w-4 h-4"></i>
-                            <span>Login</span>
-                        </a>
+                        <div class="flex items-center space-x-3">
+                            <a href="{{ url_for('login') }}" class="relative text-gray-700 hover:text-brand-600 transition-colors" aria-label="Cart">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </a>
+                            <a href="{{ url_for('login') }}" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2">
+                                <i data-lucide="log-in" class="w-4 h-4"></i>
+                                <span>Login</span>
+                            </a>
+                        </div>
                     {% endif %}
                 </div>
 
@@ -142,8 +166,20 @@
                                 {% endif %}
                                 <span class="text-sm font-medium text-gray-700">{{ current_user.name }}</span>
                             </div>
+                            <a href="{{ url_for('cart') }}" class="text-gray-700 hover:text-brand-700 font-medium flex items-center">
+                                <i data-lucide="shopping-cart" class="w-4 h-4 inline mr-2"></i> Cart
+                                {% if cart_count and cart_count > 0 %}
+                                    <span class="ml-2 inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-red-600 text-white">{{ cart_count }}</span>
+                                {% endif %}
+                            </a>
                             <a href="{{ url_for('dashboard') }}" class="text-brand-600 hover:text-brand-700 font-medium">
                                 <i data-lucide="user" class="w-4 h-4 inline mr-2"></i> Dashboard
+                            </a>
+                            <a href="{{ url_for('orders') }}" class="text-brand-600 hover:text-brand-700 font-medium">
+                                <i data-lucide="receipt" class="w-4 h-4 inline mr-2"></i> Orders
+                            </a>
+                            <a href="{{ url_for('payments') }}" class="text-brand-600 hover:text-brand-700 font-medium">
+                                <i data-lucide="credit-card" class="w-4 h-4 inline mr-2"></i> Payments
                             </a>
                             <a href="{{ url_for('logout') }}" class="text-red-600 hover:text-red-700 font-medium">
                                 <i data-lucide="log-out" class="w-4 h-4 inline mr-2"></i> Logout
