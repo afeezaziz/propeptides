@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}Peptide Calculator - Propeptides{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">Peptide Calculator</h1>
+            <p class="text-lg text-gray-600">Calculate the correct insulin amount for your peptide dosage</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Input Form -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-6">Calculate Dosage</h2>
+
+                <form id="calculatorForm" class="space-y-6">
+                    <div>
+                        <label for="vialMg" class="block text-sm font-medium text-gray-700 mb-2">
+                            Vial Amount (mg)
+                        </label>
+                        <input
+                            type="number"
+                            id="vialMg"
+                            name="vialMg"
+                            step="0.1"
+                            min="0"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+                            placeholder="e.g., 5"
+                            required
+                        >
+                    </div>
+
+                    <div>
+                        <label for="bacWaterMl" class="block text-sm font-medium text-gray-700 mb-2">
+                            Bacteriostatic Water (ml)
+                        </label>
+                        <input
+                            type="number"
+                            id="bacWaterMl"
+                            name="bacWaterMl"
+                            step="0.1"
+                            min="0"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+                            placeholder="e.g., 2"
+                            required
+                        >
+                    </div>
+
+                    <div>
+                        <label for="desiredDosage" class="block text-sm font-medium text-gray-700 mb-2">
+                            Desired Dosage (mcg)
+                        </label>
+                        <input
+                            type="number"
+                            id="desiredDosage"
+                            name="desiredDosage"
+                            step="1"
+                            min="0"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+                            placeholder="e.g., 200"
+                            required
+                        >
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="w-full bg-brand-600 text-white py-3 px-4 rounded-md hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 transition duration-200 font-medium"
+                    >
+                        Calculate
+                    </button>
+                </form>
+            </div>
+
+            <!-- Results -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-6">Results</h2>
+
+                <div id="results" class="hidden">
+                    <div class="space-y-4">
+                        <div class="bg-brand-50 border border-brand-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-brand-800">Concentration:</span>
+                                <span id="concentration" class="text-lg font-bold text-brand-900"></span>
+                            </div>
+                        </div>
+
+                        <div class="bg-accent-50 border border-accent-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-accent-800">Insulin Amount:</span>
+                                <span id="insulinAmount" class="text-lg font-bold text-accent-900"></span>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                            <div class="text-sm text-gray-600">
+                                <p class="font-medium mb-2">Instructions:</p>
+                                <ul class="space-y-1 text-xs">
+                                    <li>• Use a 1ml insulin syringe (100 units)</li>
+                                    <li>• Draw up the calculated amount</li>
+                                    <li>• Administer as directed</li>
+                                    <li>• Always double-check calculations</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="noResults" class="text-center text-gray-500 py-8">
+                    <i data-lucide="calculator" class="w-12 h-12 mx-auto mb-4 text-gray-400"></i>
+                    <p>Enter your values and click calculate to see results</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Information Section -->
+        <div class="mt-12 bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-xl font-semibold text-gray-900 mb-4">How to Use This Calculator</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-medium text-gray-900 mb-2">Inputs Explained:</h4>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li><strong>Vial Amount (mg):</strong> The total amount of peptide in the vial</li>
+                        <li><strong>Bacteriostatic Water (ml):</strong> The amount of water used to reconstitute</li>
+                        <li><strong>Desired Dosage (mcg):</strong> Your target dosage in micrograms</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-medium text-gray-900 mb-2">Important Notes:</h4>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li>• Always use sterile technique</li>
+                        <li>• Store reconstituted peptides properly</li>
+                        <li>• Consult with healthcare provider</li>
+                        <li>• Double-check all calculations</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('calculatorForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const vialMg = parseFloat(document.getElementById('vialMg').value);
+    const bacWaterMl = parseFloat(document.getElementById('bacWaterMl').value);
+    const desiredDosage = parseFloat(document.getElementById('desiredDosage').value);
+
+    // Calculate concentration (mcg/ml)
+    const concentration = (vialMg * 1000) / bacWaterMl;
+
+    // Calculate insulin amount (units)
+    // 1ml insulin syringe = 100 units
+    const dosageMl = desiredDosage / concentration;
+    const insulinUnits = dosageMl * 100;
+
+    // Display results
+    document.getElementById('concentration').textContent = concentration.toFixed(1) + ' mcg/ml';
+    document.getElementById('insulinAmount').textContent = insulinUnits.toFixed(1) + ' units';
+
+    // Show results, hide no results
+    document.getElementById('results').classList.remove('hidden');
+    document.getElementById('noResults').classList.add('hidden');
+
+    // Initialize Lucide icons
+    lucide.createIcons();
+});
+
+// Initialize Lucide icons on page load
+document.addEventListener('DOMContentLoaded', function() {
+    lucide.createIcons();
+});
+</script>
+{% endblock %}

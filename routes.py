@@ -214,3 +214,8 @@ def payment_detail(payment_id):
         Order.user_id == current_user.id
     ).first_or_404()
     return render_template('payments/detail.html', payment=payment)
+
+# Peptide Calculator Route
+@bp.route('/calculator')
+def calculator():
+    return render_template('calculator/index.html')
