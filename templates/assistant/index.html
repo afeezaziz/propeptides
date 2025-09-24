@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}AI Assistant - Propeptides{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen py-10">
+  <div class="container mx-auto px-4 max-w-4xl">
+    <div class="flex items-start justify-between gap-6 mb-6">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">AI Research Assistant</h1>
+        <p class="text-gray-600 mt-1">Ask product or research questions. I’ll reference relevant products and blog posts.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-amber-800 text-sm max-w-sm">
+          <strong class="block">Important</strong>
+          I am an AI assistant for educational purposes only and do not provide medical advice.
+        </div>
+        {% if history and history|length > 0 %}
+        <form method="POST" action="{{ url_for('assistant_clear') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm" title="Clear chat">
+            <i data-lucide="trash-2" class="w-4 h-4 inline mr-1"></i>
+            Clear
+          </button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Chat History -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 max-h-[60vh] overflow-y-auto mb-4" id="chat">
+      {% if history and history|length > 0 %}
+        <div class="space-y-4">
+          {% for m in history %}
+            {% if m.role == 'user' %}
+              <div class="flex justify-end">
+                <div class="bg-brand-600 text-white px-4 py-2 rounded-lg max-w-[80%]">{{ m.content }}</div>
+              </div>
+            {% else %}
+              <div class="flex justify-start">
+                <div class="bg-gray-100 text-gray-900 px-4 py-2 rounded-lg max-w-[80%] prose">
+                  {{ m.content | markdown }}
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-gray-600 text-sm">No messages yet. Ask a question below to get started.</div>
+      {% endif %}
+    </div>
+
+    <!-- Input -->
+    <form method="POST" action="{{ url_for('assistant_message') }}" class="flex gap-3">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="text" name="message" placeholder="Ask about peptides, product comparisons, dosages (no medical advice), etc." class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-brand-500 focus:border-brand-500" required>
+      <button type="submit" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-medium">Send</button>
+    </form>
+
+    <div class="mt-4 text-xs text-gray-500">
+      Your messages may be used to improve our assistant experience. Avoid sharing sensitive information.
+    </div>
+  </div>
+</div>
+
+<script>
+  // Auto-scroll to bottom on load
+  const chat = document.getElementById('chat');
+  if (chat) chat.scrollTop = chat.scrollHeight;
+</script>
+{% endblock %}

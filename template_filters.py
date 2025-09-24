@@ -4,13 +4,14 @@ Custom template filters for the Flask application
 
 import markdown
 from markupsafe import Markup
+import bleach
 from flask import Blueprint
 
 # Create a blueprint for template filters (though we'll register them directly)
 filters_bp = Blueprint('filters', __name__)
 
 def markdown_filter(text):
-    """Convert markdown text to HTML"""
+    """Convert markdown text to sanitized HTML"""
     if text is None:
         return ""
 
@@ -24,8 +25,31 @@ def markdown_filter(text):
         'tables',         # Table support
         'fenced_code',    # Fenced code blocks
     ])
+    html = md.convert(text)
 
-    return Markup(md.convert(text))
+    # Allow a safe subset of tags/attributes
+    allowed_tags = set(bleach.sanitizer.ALLOWED_TAGS).union({
+        'p', 'pre', 'code', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'table', 'thead', 'tbody', 'tr', 'th', 'td', 'blockquote', 'hr'
+    })
+    allowed_attributes = {
+        '*': ['class', 'id'],
+        'a': ['href', 'title', 'rel'],
+        'img': ['src', 'alt', 'title'],
+        'span': ['class'],
+        'code': ['class'],
+        'pre': ['class'],
+    }
+    cleaned = bleach.clean(
+        html,
+        tags=allowed_tags,
+        attributes=allowed_attributes,
+        protocols=['http', 'https', 'mailto'],
+        strip=True
+    )
+    # Convert bare links to anchors
+    cleaned = bleach.linkify(cleaned)
+    return Markup(cleaned)
 
 def excerpt_filter(text, length=150):
     """Create an excerpt from text"""

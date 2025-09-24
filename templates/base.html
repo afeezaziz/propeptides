@@ -41,6 +41,34 @@
             }
         }
     </script>
+    <link rel="alternate" type="application/rss+xml" title="Propeptides RSS" href="{{ url_for('rss_feed') }}" />
+    {% if GA_ID %}
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ GA_ID }}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '{{ GA_ID }}');
+    </script>
+    {% endif %}
+    {% if META_PIXEL_ID %}
+    <!-- Meta Pixel Code -->
+    <script>
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod? n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n; n.push=n; n.loaded=!0; n.version='2.0'; n.queue=[]; t=b.createElement(e); t.async=!0; t.src=v; s=b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '{{ META_PIXEL_ID }}'); fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{ META_PIXEL_ID }}&ev=PageView&noscript=1"/></noscript>
+    {% endif %}
+
+    <!-- Organization JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Propeptides",
+      "url": "{{ request.url_root.rstrip('/') }}",
+      "logo": "{{ request.url_root.rstrip('/') }}/static/favicon.ico"
+    }
+    </script>
     {% block head %}{% endblock %}
 </head>
 <body class="bg-gray-50">
@@ -73,6 +101,9 @@
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="{{ url_for('peptides') }}" class="font-medium transition-colors {{ 'text-brand-700' if request.endpoint in ['peptides', 'peptide_detail'] else 'text-gray-700 hover:text-brand-600' }}" {% if request.endpoint in ['peptides', 'peptide_detail'] %}aria-current="page"{% endif %}>Peptides</a>
                     <a href="{{ url_for('posts') }}" class="font-medium transition-colors {{ 'text-brand-700' if request.endpoint in ['posts', 'post_detail'] else 'text-gray-700 hover:text-brand-600' }}" {% if request.endpoint in ['posts', 'post_detail'] %}aria-current="page"{% endif %}>Blog</a>
+                    <a href="{{ url_for('community_index') }}" class="font-medium transition-colors {{ 'text-brand-700' if request.endpoint in ['community_index', 'community_detail', 'community_new'] else 'text-gray-700 hover:text-brand-600' }}" {% if request.endpoint in ['community_index', 'community_detail', 'community_new'] %}aria-current="page"{% endif %}>Community</a>
+                    <a href="{{ url_for('search') }}" class="font-medium transition-colors {{ 'text-brand-700' if request.endpoint == 'search' else 'text-gray-700 hover:text-brand-600' }}" {% if request.endpoint == 'search' %}aria-current="page"{% endif %}>Search</a>
+                    <a href="{{ url_for('assistant') }}" class="font-medium transition-colors {{ 'text-brand-700' if request.endpoint == 'assistant' else 'text-gray-700 hover:text-brand-600' }}" {% if request.endpoint == 'assistant' %}aria-current="page"{% endif %}>Assistant</a>
                     <a href="{{ url_for('calculator') }}" class="font-medium transition-colors {{ 'text-brand-700' if request.endpoint == 'calculator' else 'text-gray-700 hover:text-brand-600' }}" {% if request.endpoint == 'calculator' %}aria-current="page"{% endif %}>Calculator</a>
                     <a href="{{ url_for('tracker') }}" class="font-medium transition-colors {{ 'text-brand-700' if request.endpoint in ['tracker', 'log_dosage', 'add_progress'] else 'text-gray-700 hover:text-brand-600' }}" {% if request.endpoint in ['tracker', 'log_dosage', 'add_progress'] %}aria-current="page"{% endif %}>Tracker</a>
                 </div>
@@ -81,12 +112,12 @@
                 <div class="hidden md:flex items-center space-x-4">
                     <a href="{{ url_for('peptides') }}" class="text-brand-600 hover:text-brand-700 font-medium">Shop</a>
                     <!-- Cart button -->
-                    <a href="{% if current_user.is_authenticated %}{{ url_for('cart') }}{% else %}{{ url_for('login') }}{% endif %}"
+                    <a id="nav-cart-link" href="{% if current_user.is_authenticated %}{{ url_for('cart') }}{% else %}{{ url_for('login', next=url_for('cart')) }}{% endif %}"
                        class="relative text-gray-700 hover:text-brand-600 transition-colors"
                        aria-label="Cart">
                         <i data-lucide="shopping-cart" class="w-5 h-5"></i>
                         {% if cart_count and cart_count > 0 %}
-                        <span class="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] leading-none font-semibold px-1.5 py-0.5 rounded-full"
+                        <span id="cart-count-badge" class="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] leading-none font-semibold px-1.5 py-0.5 rounded-full"
                               aria-label="{{ cart_count }} items in cart">{{ cart_count }}</span>
                         {% endif %}
                     </a>
@@ -107,6 +138,14 @@
                                     <a href="{{ url_for('payments') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
                                         <i data-lucide="credit-card" class="w-4 h-4 inline mr-2"></i> Payments
                                     </a>
+                                    <a href="{{ url_for('favorites') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                                        <i data-lucide="heart" class="w-4 h-4 inline mr-2"></i> Wishlist
+                                    </a>
+                                    {% if current_user.role == 'admin' %}
+                                    <a href="{{ url_for('admin_index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                                        <i data-lucide="settings" class="w-4 h-4 inline mr-2"></i> Admin
+                                    </a>
+                                    {% endif %}
                                     <a href="{{ url_for('cart') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
                                         <i data-lucide="shopping-cart" class="w-4 h-4 inline mr-2"></i> Cart
                                     </a>
@@ -118,8 +157,8 @@
                         </div>
                     {% else %}
                         <div class="flex items-center space-x-3">
-                            <a href="{{ url_for('login') }}" class="text-gray-700 hover:text-brand-600 font-medium">Dashboard</a>
-                            <a href="{{ url_for('login') }}" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2">
+                            <a href="{{ url_for('login', next=url_for('dashboard')) }}" class="text-gray-700 hover:text-brand-600 font-medium">Dashboard</a>
+                            <a href="{{ url_for('login', next=request.path) }}" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2">
                                 <i data-lucide="log-in" class="w-4 h-4"></i>
                                 <span>Login</span>
                             </a>
@@ -142,6 +181,9 @@
                 <div class="flex flex-col space-y-3">
                     <a href="{{ url_for('peptides') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Peptides</a>
                     <a href="{{ url_for('posts') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Blog</a>
+                    <a href="{{ url_for('community_index') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Community</a>
+                    <a href="{{ url_for('search') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Search</a>
+                    <a href="{{ url_for('assistant') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Assistant</a>
                     <a href="{{ url_for('calculator') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Calculator</a>
                     <a href="{{ url_for('tracker') }}" class="text-gray-700 hover:text-brand-600 font-medium transition-colors">Tracker</a>
                     <div class="pt-4 flex flex-col space-y-3">
@@ -165,12 +207,20 @@
                             <a href="{{ url_for('payments') }}" class="text-brand-600 hover:text-brand-700 font-medium">
                                 <i data-lucide="credit-card" class="w-4 h-4 inline mr-2"></i> Payments
                             </a>
+                            <a href="{{ url_for('favorites') }}" class="text-brand-600 hover:text-brand-700 font-medium">
+                                <i data-lucide="heart" class="w-4 h-4 inline mr-2"></i> Wishlist
+                            </a>
+                            {% if current_user.role == 'admin' %}
+                            <a href="{{ url_for('admin_index') }}" class="text-brand-600 hover:text-brand-700 font-medium">
+                                <i data-lucide="settings" class="w-4 h-4 inline mr-2"></i> Admin
+                            </a>
+                            {% endif %}
                             <a href="{{ url_for('logout') }}" class="text-red-600 hover:text-red-700 font-medium">
                                 <i data-lucide="log-out" class="w-4 h-4 inline mr-2"></i> Logout
                             </a>
                         {% else %}
-                            <a href="{{ url_for('login') }}" class="text-gray-700 hover:text-brand-600 font-medium text-center">Dashboard</a>
-                            <a href="{{ url_for('login') }}" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg font-medium transition-colors text-center flex items-center justify-center space-x-2">
+                            <a href="{{ url_for('login', next=url_for('dashboard')) }}" class="text-gray-700 hover:text-brand-600 font-medium text-center">Dashboard</a>
+                            <a href="{{ url_for('login', next=request.path) }}" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg font-medium transition-colors text-center flex items-center justify-center space-x-2">
                                 <i data-lucide="log-in" class="w-4 h-4"></i>
                                 <span>Login</span>
                             </a>
@@ -239,6 +289,13 @@
 
                 <!-- Contact -->
                 <div>
+                    <h3 class="text-sm font-semibold tracking-wider text-gray-300 uppercase">Subscribe</h3>
+                    <form method="POST" action="{{ url_for('newsletter_subscribe') }}" class="mt-4 flex gap-2" data-ajax="newsletter-subscribe">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="email" name="email" required placeholder="Email address" class="flex-1 px-3 py-2 rounded bg-white text-gray-900 placeholder-gray-500">
+                        <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 rounded font-medium">Subscribe</button>
+                    </form>
+                    <p class="mt-2 text-[11px] text-gray-500">By subscribing, you agree to receive research updates. <a href="{{ url_for('privacy') }}" class="underline">Privacy Policy</a>.</p>
                     <h3 class="text-sm font-semibold tracking-wider text-gray-300 uppercase">Contact</h3>
                     <ul class="mt-4 space-y-3 text-sm text-gray-400">
                         <li class="flex items-center space-x-2">
@@ -337,6 +394,163 @@
 
         // Initialize Lucide icons
         lucide.createIcons();
+
+        // Toast helper
+        function showToast(message, type = 'success') {
+            const root = document.getElementById('toast-root') || (function(){
+                const d = document.createElement('div');
+                d.id = 'toast-root';
+                d.className = 'toast toast-end';
+                document.body.appendChild(d);
+                return d;
+            })();
+            const item = document.createElement('div');
+            item.className = `alert ${type === 'error' ? 'alert-error' : 'alert-success'} shadow`;
+            item.innerHTML = `<span>${message}</span>`;
+            root.appendChild(item);
+            setTimeout(() => { item.remove(); }, 2500);
+        }
+
+        // Update cart count badge in header
+        function updateCartCount(n) {
+            const link = document.getElementById('nav-cart-link');
+            if (!link) return;
+            let badge = document.getElementById('cart-count-badge');
+            if (!badge) {
+                badge = document.createElement('span');
+                badge.id = 'cart-count-badge';
+                badge.className = 'absolute -top-2 -right-2 bg-red-600 text-white text-[10px] leading-none font-semibold px-1.5 py-0.5 rounded-full';
+                link.appendChild(badge);
+            }
+            if (n && Number(n) > 0) {
+                badge.textContent = String(n);
+                badge.style.display = 'inline-block';
+                badge.setAttribute('aria-label', `${n} items in cart`);
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // Intercept Add-to-Cart forms with data-ajax="add-to-cart"
+        document.addEventListener('submit', function(e){
+            const form = e.target;
+            if (!(form instanceof HTMLFormElement)) return;
+            if (form.dataset.ajax === 'add-to-cart') {
+                e.preventDefault();
+                const formData = new FormData(form);
+                fetch(form.action || "{{ url_for('add_to_cart') }}", {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data && data.success) {
+                        updateCartCount(data.cart_count);
+                        showToast('Added to cart');
+                    } else {
+                        showToast('Could not add to cart', 'error');
+                    }
+                })
+                .catch(() => showToast('Error adding to cart', 'error'));
+            }
+        });
+
+        // Intercept Wishlist toggle forms
+        document.addEventListener('submit', function(e){
+            const form = e.target;
+            if (!(form instanceof HTMLFormElement)) return;
+            if (form.dataset.ajax === 'toggle-favorite') {
+                e.preventDefault();
+                const formData = new FormData(form);
+                fetch(form.action || "{{ url_for('toggle_favorite') }}", {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (!data || !data.success) { showToast('Could not update wishlist', 'error'); return; }
+                    // Toggle button state
+                    const btn = form.querySelector('button');
+                    if (btn) {
+                        if (data.favorited) {
+                            btn.classList.add('text-red-600');
+                            btn.classList.remove('text-gray-400');
+                            btn.setAttribute('aria-label', 'Remove from wishlist');
+                        } else {
+                            btn.classList.remove('text-red-600');
+                            btn.classList.add('text-gray-400');
+                            btn.setAttribute('aria-label', 'Add to wishlist');
+                            // If on favorites page, remove card
+                            if (location.pathname.startsWith('/favorites')) {
+                                const card = form.closest('.group, .bg-white');
+                                if (card) card.remove();
+                            }
+                        }
+                    }
+                    showToast(data.favorited ? 'Added to wishlist' : 'Removed from wishlist');
+                })
+                .catch(() => showToast('Error updating wishlist', 'error'));
+            }
+        });
+
+        // Intercept Stock Alert forms
+        document.addEventListener('submit', function(e){
+            const form = e.target;
+            if (!(form instanceof HTMLFormElement)) return;
+            if (form.dataset.ajax === 'stock-alert') {
+                e.preventDefault();
+                const formData = new FormData(form);
+                fetch(form.action || "{{ url_for('create_stock_alert') }}", {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (!data || !data.success) {
+                        showToast(data && data.error ? data.error : 'Could not subscribe', 'error');
+                        return;
+                    }
+                    showToast('We will notify you when back in stock');
+                    const btn = form.querySelector('button[type="submit"]');
+                    if (btn) {
+                        btn.disabled = true;
+                        btn.textContent = 'Subscribed';
+                    }
+                })
+                .catch(() => showToast('Error subscribing to alert', 'error'));
+            }
+        });
+
+        // Intercept Newsletter subscribe forms
+        document.addEventListener('submit', function(e){
+            const form = e.target;
+            if (!(form instanceof HTMLFormElement)) return;
+            if (form.dataset.ajax === 'newsletter-subscribe') {
+                e.preventDefault();
+                const formData = new FormData(form);
+                fetch(form.action || "{{ url_for('newsletter_subscribe') }}", {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (!data || !data.success) {
+                        showToast((data && data.error) || 'Subscription failed', 'error');
+                        return;
+                    }
+                    try { if (window.gtag) gtag('event', 'sign_up', { method: 'newsletter' }); } catch (e) {}
+                    try { if (window.fbq) fbq('trackCustom', 'NewsletterSubscribe'); } catch (e) {}
+                    showToast('Subscribed!');
+                    const btn = form.querySelector('button[type="submit"], button');
+                    if (btn) { btn.disabled = true; btn.textContent = 'Subscribed'; }
+                })
+                .catch(() => showToast('Subscription failed', 'error'));
+            }
+        });
     </script>
 </body>
 </html>

@@ -2,11 +2,30 @@
 
 {% block title %}Blog - Propeptides{% endblock %}
 
+{% block head %}
+{{ super() }}
+<meta name="description" content="Expert articles on peptide research, protocols, and biotechnology from Propeptides.">
+<link rel="canonical" href="{{ request.url }}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Propeptides Blog">
+<meta property="og:description" content="Expert articles on peptide research, protocols, and biotechnology.">
+<meta property="og:url" content="{{ request.url }}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Propeptides Blog">
+<meta name="twitter:description" content="Expert articles on peptide research, protocols, and biotechnology.">
+{% endblock %}
+
 {% block content %}
 <div class="bg-white">
     <div class="container mx-auto px-4 py-12">
         <div class="text-center mb-12">
             <h1 class="text-4xl font-bold text-gray-900 mb-4">Peptide Research Blog</h1>
+            <div class="mb-4">
+                <a href="{{ url_for('rss_feed') }}" class="inline-flex items-center text-sm text-brand-600 hover:text-brand-700">
+                    <i data-lucide="rss" class="w-4 h-4 mr-1"></i>
+                    RSS Feed
+                </a>
+            </div>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto">
                 Stay updated with the latest research, insights, and developments in peptide science and biotechnology.
             </p>
@@ -89,12 +108,13 @@
         <p class="text-xl mb-8 opacity-90">
             Subscribe to our newsletter for the latest research findings and industry insights.
         </p>
-        <div class="max-w-md mx-auto flex gap-4">
-            <input type="email" placeholder="Enter your email" class="flex-1 px-4 py-3 rounded-lg text-gray-900">
-            <button class="bg-white text-brand-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+        <form method="POST" action="{{ url_for('newsletter_subscribe') }}" class="max-w-md mx-auto flex gap-4" data-ajax="newsletter-subscribe">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="email" name="email" required placeholder="Enter your email" class="flex-1 px-4 py-3 rounded-lg text-gray-900">
+            <button type="submit" class="bg-white text-brand-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
                 Subscribe
             </button>
-        </div>
+        </form>
     </div>
 </section>
 {% endblock %}

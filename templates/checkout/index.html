@@ -11,6 +11,7 @@
         </div>
 
         <form method="POST" action="{{ url_for('checkout') }}" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <!-- Checkout Form -->
             <div class="lg:col-span-2 space-y-6">
                 <!-- Contact Information -->
@@ -190,9 +191,10 @@
                             {% endif %}
                             <div class="flex-1">
                                 <h4 class="text-sm font-medium text-gray-900 line-clamp-1">{{ item.product.name }}</h4>
-                                <p class="text-sm text-gray-600">{{ item.quantity }} × ${{ "%.2f"|format(item.product.price) }}</p>
+                                <p class="text-sm text-gray-600">{{ item.quantity }} × ${{ "%.2f"|format(item.product.sale_price if item.product.sale_price else item.product.price) }}</p>
                             </div>
-                            <span class="text-sm font-medium text-gray-900">${{ "%.2f"|format(item.product.price * item.quantity) }}</span>
+                            {% set _unit = item.product.sale_price if item.product.sale_price else item.product.price %}
+                            <span class="text-sm font-medium text-gray-900">${{ "%.2f"|format(_unit * item.quantity) }}</span>
                         </div>
                         {% endfor %}
                     </div>

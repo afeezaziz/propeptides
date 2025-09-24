@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Admin - Propeptides{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen py-10">
+  <div class="container mx-auto px-4 max-w-5xl">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-3xl font-bold text-gray-900">Admin</h1>
+      <div class="flex items-center gap-2">
+        <a href="{{ url_for('admin_export_subscribers') }}" class="px-4 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg text-sm font-medium" title="Export newsletter subscribers as CSV">
+          <i data-lucide="download" class="w-4 h-4 inline mr-1"></i>
+          Export Subscribers
+        </a>
+        <form method="POST" action="{{ url_for('admin_clear_index') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium" onclick="return confirm('Clear the entire search index?')">
+            <i data-lucide="trash-2" class="w-4 h-4 inline mr-1"></i>
+            Clear Index
+          </button>
+        </form>
+        <form method="POST" action="{{ url_for('admin_reindex') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-medium">
+            <i data-lucide="database" class="w-4 h-4 inline mr-1"></i>
+            Reindex
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div class="bg-white border border-gray-200 rounded-lg p-5">
+        <div class="text-sm text-gray-600">Products</div>
+        <div class="text-2xl font-bold text-gray-900">{{ stats.products }}</div>
+      </div>
+      <div class="bg-white border border-gray-200 rounded-lg p-5">
+        <div class="text-sm text-gray-600">Blog Posts</div>
+        <div class="text-2xl font-bold text-gray-900">{{ stats.posts }}</div>
+      </div>
+      <div class="bg-white border border-gray-200 rounded-lg p-5">
+        <div class="text-sm text-gray-600">Search Documents</div>
+        <div class="text-2xl font-bold text-gray-900">{{ stats.search_documents }}</div>
+      </div>
+      <div class="bg-white border border-gray-200 rounded-lg p-5">
+        <div class="text-sm text-gray-600">Newsletter Subscribers</div>
+        <div class="text-2xl font-bold text-gray-900">{{ stats.subscribers }}</div>
+      </div>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded-lg p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">Search Index Management</h2>
+      <p class="text-gray-600 mb-4">Use the actions above to rebuild or clear the vector index used by the Assistant and Search. Reindex will embed active products and published posts.</p>
+      <ul class="list-disc ml-6 text-sm text-gray-600">
+        <li>Reindexing may take a minute depending on content volume.</li>
+        <li>Auto-embedding runs on product/post create/update; reindex is primarily for bulk rebuilds.</li>
+        <li>Clearing the index removes all embeddings; run Reindex after clearing.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

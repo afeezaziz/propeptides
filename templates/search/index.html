@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Search - Propeptides{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen py-10">
+  <div class="container mx-auto px-4 max-w-5xl">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-3xl font-bold text-gray-900">Search</h1>
+      <a href="{{ url_for('assistant') }}" class="inline-flex items-center px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-medium">
+        <i data-lucide="bot" class="w-4 h-4 mr-2"></i>
+        Ask the AI Assistant
+      </a>
+    </div>
+
+    <form action="{{ url_for('search') }}" method="GET" class="space-y-4 mb-6">
+      <div class="flex gap-3">
+        <input type="text" name="q" value="{{ q }}" placeholder="Search products and blog posts..." class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-brand-500 focus:border-brand-500" required>
+        <button type="submit" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-medium">Search</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-6 gap-3 bg-white border border-gray-200 rounded-lg p-3">
+        <!-- Type facet -->
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-2">Type</label>
+          <select name="type" class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white">
+            <option value="all" {{ 'selected' if type_filter == 'all' else '' }}>All ({{ (counts.product or 0) + (counts.post or 0) }})</option>
+            <option value="product" {{ 'selected' if type_filter == 'product' else '' }}>Products ({{ counts.product or 0 }})</option>
+            <option value="post" {{ 'selected' if type_filter == 'post' else '' }}>Blog ({{ counts.post or 0 }})</option>
+          </select>
+        </div>
+        <!-- Category facet -->
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-2">Category</label>
+          <select name="category" class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white">
+            <option value="" {{ 'selected' if not selected_category else '' }}>All</option>
+            {% for c in categories %}
+            <option value="{{ c.slug }}" {{ 'selected' if selected_category == c.slug else '' }}>{{ c.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <!-- Price range -->
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-2">Price Min/Max</label>
+          <div class="flex gap-2">
+            <input type="number" step="0.01" min="0" name="min_price" value="{{ min_price if min_price is not none else '' }}" placeholder="0" class="w-1/2 px-3 py-2 rounded-lg border border-gray-300"/>
+            <input type="number" step="0.01" min="0" name="max_price" value="{{ max_price if max_price is not none else '' }}" placeholder="999" class="w-1/2 px-3 py-2 rounded-lg border border-gray-300"/>
+          </div>
+        </div>
+        <!-- Stock filter -->
+        <div class="flex items-end gap-3">
+          <label class="inline-flex items-center gap-2 text-sm text-gray-700">
+            <input type="checkbox" name="in_stock" value="1" {% if in_stock %}checked{% endif %} class="rounded border-gray-300">
+            In stock only
+          </label>
+        </div>
+        <!-- Sale filter -->
+        <div class="flex items-end gap-3">
+          <label class="inline-flex items-center gap-2 text-sm text-gray-700">
+            <input type="checkbox" name="on_sale" value="1" {% if on_sale %}checked{% endif %} class="rounded border-gray-300">
+            On sale only
+          </label>
+        </div>
+        <!-- Sort -->
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-2">Sort</label>
+          <select name="sort" class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white">
+            <option value="relevance" {{ 'selected' if sort == 'relevance' else '' }}>Relevance</option>
+            <option value="price_low" {{ 'selected' if sort == 'price_low' else '' }}>Price: Low to High</option>
+            <option value="price_high" {{ 'selected' if sort == 'price_high' else '' }}>Price: High to Low</option>
+            <option value="newest" {{ 'selected' if sort == 'newest' else '' }}>Newest</option>
+            <option value="name_asc" {{ 'selected' if sort == 'name_asc' else '' }}>Name: A to Z</option>
+            <option value="name_desc" {{ 'selected' if sort == 'name_desc' else '' }}>Name: Z to A</option>
+          </select>
+        </div>
+      </div>
+    </form>
+
+    {% if q %}
+      {% if results and results|length > 0 %}
+        <div class="mb-4 text-sm text-gray-600">Found {{ results|length }} results</div>
+        <div class="space-y-3">
+          {% for r in results %}
+          <div class="bg-white border border-gray-200 rounded-lg p-4 hover:border-brand-300 transition">
+            <div class="flex items-start gap-3">
+              {% if r.kind == 'product' %}
+              <i data-lucide="beaker" class="w-5 h-5 text-brand-600 mt-0.5"></i>
+              {% else %}
+              <i data-lucide="file-text" class="w-5 h-5 text-gray-600 mt-0.5"></i>
+              {% endif %}
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <div class="text-gray-900 font-semibold"><a href="{{ r.url }}" class="hover:text-brand-600">{{ r.title }}</a></div>
+                  {% if r.kind == 'product' and r.price is not none %}
+                    <div class="text-sm text-brand-600 font-semibold">${{ '%.2f'|format(r.price) }}</div>
+                  {% endif %}
+                </div>
+                {% if r.snippet %}
+                <div class="text-sm text-gray-600 mt-1">{{ r.snippet }}</div>
+                {% endif %}
+                <div class="mt-1 text-xs text-gray-500">{{ r.kind|capitalize }}</div>
+              </div>
+              {% if r.kind == 'product' %}
+              <div class="ml-3">
+                {% if current_user.is_authenticated and r.in_stock %}
+                <form method="POST" action="{{ url_for('add_to_cart') }}" data-ajax="add-to-cart">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <input type="hidden" name="product_id" value="{{ r.id }}">
+                  <input type="hidden" name="quantity" value="1">
+                  <button type="submit" class="px-3 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded text-sm">Add</button>
+                </form>
+                {% elif r.in_stock %}
+                  <a href="{{ url_for('login', next=request.full_path) }}" class="px-3 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded text-sm">Login to buy</a>
+                {% else %}
+                  <span class="px-3 py-1.5 bg-gray-200 text-gray-600 rounded text-sm">Out of stock</span>
+                {% endif %}
+              </div>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="bg-white border border-gray-200 rounded-xl p-10 text-center">
+          <div class="mx-auto w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+            <i data-lucide="search" class="w-6 h-6 text-gray-500"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">No results</h3>
+          <p class="text-gray-600">Try another keyword, or ask the AI Assistant for help.</p>
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="text-gray-600 text-sm">Enter a query above to search products and posts.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

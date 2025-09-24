@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}New Community Post - Propeptides{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen py-12">
+  <div class="container mx-auto px-4 max-w-3xl">
+    <div class="mb-6">
+      <a href="{{ url_for('community_index') }}" class="text-brand-600 hover:text-brand-700 inline-flex items-center text-sm">
+        <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Back to Community
+      </a>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h1 class="text-2xl font-bold text-gray-900">Create a New Post</h1>
+      </div>
+
+      <form method="POST" action="{{ url_for('community_new') }}" class="space-y-5">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+          <input type="text" name="title" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-brand-500 focus:border-brand-500" placeholder="What would you like to discuss?">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Content</label>
+          <textarea name="content" rows="10" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-brand-500 focus:border-brand-500" placeholder="Share details, context, what you've tried, and what you're hoping to learn."></textarea>
+          <p class="text-xs text-gray-500 mt-1">Be respectful and avoid medical advice. This community is for research and education.</p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Tags</label>
+          <input type="text" name="tags" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-brand-500 focus:border-brand-500" placeholder="e.g. BPC-157, dosing, cycle">
+          <p class="text-xs text-gray-500 mt-1">Separate tags with commas.</p>
+        </div>
+
+        <div class="flex justify-end gap-3">
+          <a href="{{ url_for('community_index') }}" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg">Cancel</a>
+          <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg">Publish</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="mt-6 text-sm text-gray-600">
+      <h2 class="font-semibold text-gray-900 mb-2">Community Guidelines</h2>
+      <ul class="list-disc ml-5 space-y-1">
+        <li>Be respectful and constructive.</li>
+        <li>No medical advice—research and education only.</li>
+        <li>Share sources and references where possible.</li>
+        <li>Moderation reserves the right to remove inappropriate content.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SimpleMDE Markdown Editor -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<script>
+  (function(){
+    const el = document.querySelector('textarea[name="content"]');
+    if (el && window.SimpleMDE) {
+      new SimpleMDE({ element: el, spellChecker: false, status: false });
+    }
+  })();
+  </script>
+{% endblock %}

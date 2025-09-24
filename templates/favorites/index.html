@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Wishlist - Propeptides{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen py-10">
+  <div class="container mx-auto px-4 max-w-6xl">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-3xl font-bold text-gray-900">My Wishlist</h1>
+      <a href="{{ url_for('peptides') }}" class="inline-flex items-center px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-medium">
+        <i data-lucide="shopping-bag" class="w-4 h-4 mr-2"></i>
+        Continue Shopping
+      </a>
+    </div>
+
+    {% if products and products|length > 0 %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {% for product in products %}
+      <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow group">
+        {% if product.featured_image %}
+        <div class="relative">
+          <img src="{{ product.featured_image }}" alt="{{ product.name }}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+          {% if product.sale_price %}
+          <span class="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-xs font-semibold">Sale</span>
+          {% endif %}
+          <!-- Favorite toggle -->
+          <form method="POST" action="{{ url_for('toggle_favorite') }}" class="absolute top-2 right-2" data-ajax="toggle-favorite">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="product_id" value="{{ product.id }}">
+            <button type="submit" class="p-2 rounded-full bg-white/90 hover:bg-white shadow" aria-label="Remove from wishlist">
+              <i data-lucide="heart" class="w-5 h-5 text-red-600"></i>
+            </button>
+          </form>
+        </div>
+        {% else %}
+        <div class="w-full h-48 bg-gradient-to-r from-brand-500 to-blue-600 flex items-center justify-center relative">
+          <i data-lucide="flask-conical" class="w-16 h-16 text-white opacity-50"></i>
+          <form method="POST" action="{{ url_for('toggle_favorite') }}" class="absolute top-2 right-2" data-ajax="toggle-favorite">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="product_id" value="{{ product.id }}">
+            <button type="submit" class="p-2 rounded-full bg-white/90 hover:bg-white shadow" aria-label="Remove from wishlist">
+              <i data-lucide="heart" class="w-5 h-5 text-red-600"></i>
+            </button>
+          </form>
+        </div>
+        {% endif %}
+
+        <div class="p-4">
+          <h3 class="font-semibold text-gray-900 mb-2 hover:text-brand-600 transition-colors">
+            <a href="{{ url_for('peptide_detail', slug=product.slug) }}">{{ product.name }}</a>
+          </h3>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center space-x-2">
+              {% if product.sale_price %}
+              <span class="text-lg font-bold text-brand-600">${{ "%.2f"|format(product.sale_price) }}</span>
+              <span class="text-sm text-gray-500 line-through">${{ "%.2f"|format(product.price) }}</span>
+              {% else %}
+              <span class="text-lg font-bold text-brand-600">${{ "%.2f"|format(product.price) }}</span>
+              {% endif %}
+            </div>
+            <span class="text-xs text-gray-500">SKU: {{ product.sku }}</span>
+          </div>
+
+          <div class="flex items-center justify-between">
+            {% if current_user.is_authenticated and product.is_in_stock() %}
+            <form method="POST" action="{{ url_for('add_to_cart') }}" data-ajax="add-to-cart">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <input type="hidden" name="product_id" value="{{ product.id }}">
+              <input type="hidden" name="quantity" value="1">
+              <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white px-3 py-1 rounded text-sm font-medium transition-colors">
+                Add to Cart
+              </button>
+            </form>
+            {% elif product.is_in_stock() %}
+            <a href="{{ url_for('login', next=request.path) }}" class="bg-brand-600 hover:bg-brand-700 text-white px-3 py-1 rounded text-sm font-medium transition-colors inline-block">Login to Buy</a>
+            {% else %}
+            <span class="text-sm text-red-600">Out of Stock</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white border border-gray-200 rounded-xl p-10 text-center">
+      <div class="mx-auto w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+        <i data-lucide="heart" class="w-6 h-6 text-gray-500"></i>
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">Your wishlist is empty</h3>
+      <p class="text-gray-600 mb-4">Browse peptides and add your favorites to easily find them later.</p>
+      <a href="{{ url_for('peptides') }}" class="inline-flex items-center px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-medium transition-colors">
+        Shop Peptides
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

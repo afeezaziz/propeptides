@@ -11,6 +11,37 @@
         </div>
 
         {% if cart_items %}
+        <!-- Free Shipping Banner -->
+        <div id="free-shipping-banner" class="mb-6">
+            {% if shipping_remaining > 0 %}
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div class="flex items-center justify-between gap-4">
+                    <div class="text-sm text-blue-800">
+                        You're <strong>${{ '%.2f'|format(shipping_remaining) }}</strong> away from free shipping.
+                    </div>
+                    <div class="flex-1">
+                        <div class="w-full bg-blue-100 rounded-full h-2 overflow-hidden">
+                            <div id="shipping-progress-bar" class="bg-brand-600 h-2" style="width: {{ shipping_progress }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div class="flex items-center justify-between gap-4">
+                    <div class="text-sm text-green-800">
+                        🎉 You've unlocked <strong>Free Shipping</strong>!
+                    </div>
+                    <div class="flex-1">
+                        <div class="w-full bg-green-100 rounded-full h-2 overflow-hidden">
+                            <div id="shipping-progress-bar" class="bg-green-600 h-2" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <input type="hidden" id="free-shipping-threshold" value="{{ '%.2f'|format(free_shipping_threshold) }}" />
+        </div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Cart Items -->
             <div class="lg:col-span-2">
@@ -39,17 +70,24 @@
                                     </h3>
                                     <p class="text-sm text-gray-600">SKU: {{ item.product.sku }}</p>
                                     <p class="text-lg font-semibold text-brand-600 mt-1">
-                                        ${{ "%.2f"|format(item.product.price) }}
+                                        {% if item.product.sale_price %}
+                                            ${{ "%.2f"|format(item.product.sale_price) }}
+                                            <span class="text-sm text-gray-500 line-through ml-2">${{ "%.2f"|format(item.product.price) }}</span>
+                                        {% else %}
+                                            ${{ "%.2f"|format(item.product.price) }}
+                                        {% endif %}
                                     </p>
                                 </div>
 
                                 <div class="flex items-center space-x-3">
-                                    <form method="POST" action="{{ url_for('update_cart') }}" class="flex items-center space-x-2" onsubmit="return updateCartItem(this, {{ item.id }})">
+                                    <form method="POST" action="{{ url_for('update_cart') }}" class="flex items-center space-x-2" onsubmit="return updateCartItem(this)">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                         <input type="hidden" name="item_id" value="{{ item.id }}">
                                         <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock_quantity }}" class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-brand-500 focus:border-brand-500" onchange="this.form.submit()">
                                     </form>
 
                                     <form method="POST" action="{{ url_for('remove_from_cart', item_id=item.id) }}" onsubmit="return confirm('Are you sure you want to remove this item?')">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                         <button type="submit" class="text-red-600 hover:text-red-700 p-2">
                                             <i data-lucide="trash-2" class="w-5 h-5"></i>
                                         </button>
@@ -58,9 +96,10 @@
 
                                 <div class="text-right">
                                     <p class="text-lg font-semibold text-gray-900">
-                                        ${{ "%.2f"|format(item.product.price * item.quantity) }}
+                                        {% set _unit = item.product.sale_price if item.product.sale_price else item.product.price %}
+                                        ${{ "%.2f"|format(_unit * item.quantity) }}
                                     </p>
-                                    <p class="text-sm text-gray-600">{{ item.quantity }} × ${{ "%.2f"|format(item.product.price) }}</p>
+                                    <p class="text-sm text-gray-600">{{ item.quantity }} × ${{ "%.2f"|format(item.product.sale_price if item.product.sale_price else item.product.price) }}</p>
                                 </div>
                             </div>
                         </div>
@@ -77,7 +116,7 @@
                     <div class="space-y-3 mb-6">
                         <div class="flex justify-between text-gray-600">
                             <span>Subtotal</span>
-                            <span>${{ "%.2f"|format(total) }}</span>
+                            <span id="subtotal-amount">${{ "%.2f"|format(total) }}</span>
                         </div>
                         <div class="flex justify-between text-gray-600">
                             <span>Shipping</span>
@@ -90,7 +129,7 @@
                         <div class="border-t pt-3">
                             <div class="flex justify-between text-lg font-semibold text-gray-900">
                                 <span>Total</span>
-                                <span>${{ "%.2f"|format(total) }}</span>
+                                <span id="total-amount">${{ "%.2f"|format(total) }}</span>
                             </div>
                         </div>
                     </div>
@@ -145,11 +184,12 @@
 </div>
 
 <script>
-function updateCartItem(form, itemId) {
+function updateCartItem(form) {
     const formData = new FormData(form);
     const quantity = formData.get('quantity');
+    const itemId = formData.get('item_id');
 
-    fetch('{{ url_for("main.update_cart") }}', {
+    fetch('{{ url_for("update_cart") }}', {
         method: 'POST',
         body: formData,
         headers: {
@@ -158,33 +198,70 @@ function updateCartItem(form, itemId) {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.success) {
-            if (data.removed) {
-                // Item was removed (quantity 0)
-                location.reload();
-            } else {
-                // Update the item total
-                const itemRow = form.closest('div.p-6');
-                const totalElement = itemRow.querySelector('.text-right .text-lg');
-                const quantityElement = itemRow.querySelector('.text-sm.text-gray-600');
-
-                totalElement.textContent = `$${data.total.toFixed(2)}`;
-                quantityElement.textContent = `${quantity} × $${(data.total / quantity).toFixed(2)}`;
-
-                // Update overall total
-                updateOverallTotal();
+        if (!data || !data.success) return;
+        const orderSummarySubtotal = document.getElementById('subtotal-amount');
+        const orderSummaryTotal = document.getElementById('total-amount');
+        if (typeof data.cart_total === 'number') {
+            const amt = `$${data.cart_total.toFixed(2)}`;
+            if (orderSummarySubtotal) orderSummarySubtotal.textContent = amt;
+            if (orderSummaryTotal) orderSummaryTotal.textContent = amt;
+            // Update free shipping banner
+            const thresholdEl = document.getElementById('free-shipping-threshold');
+            const progressBar = document.getElementById('shipping-progress-bar');
+            const banner = document.getElementById('free-shipping-banner');
+            if (thresholdEl && progressBar && banner) {
+                const threshold = parseFloat(thresholdEl.value || '99');
+                const remaining = Math.max(0, threshold - data.cart_total);
+                const progress = threshold > 0 ? Math.min(100, (data.cart_total / threshold) * 100) : 100;
+                progressBar.style.width = `${progress}%`;
+                if (remaining <= 0) {
+                    banner.innerHTML = `
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <div class="flex items-center justify-between gap-4">
+                            <div class="text-sm text-green-800">🎉 You've unlocked <strong>Free Shipping</strong>!</div>
+                            <div class="flex-1">
+                                <div class="w-full bg-green-100 rounded-full h-2 overflow-hidden">
+                                    <div class="bg-green-600 h-2" style="width: 100%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                } else {
+                    banner.innerHTML = `
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div class="flex items-center justify-between gap-4">
+                            <div class="text-sm text-blue-800">You're <strong>$${remaining.toFixed(2)}</strong> away from free shipping.</div>
+                            <div class="flex-1">
+                                <div class="w-full bg-blue-100 rounded-full h-2 overflow-hidden">
+                                    <div class="bg-brand-600 h-2" style="width: ${progress}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="free-shipping-threshold" value="${threshold.toFixed(2)}" />`;
+                }
             }
+        }
+
+        const itemRow = form.closest('div.p-6');
+        if (data.removed) {
+            if (itemRow) itemRow.remove();
+            return;
+        }
+
+        // Update the item total and per-unit line
+        if (itemRow && typeof data.item_total === 'number') {
+            const totalElement = itemRow.querySelector('.text-right .text-lg');
+            const quantityElement = itemRow.querySelector('.text-sm.text-gray-600');
+            totalElement && (totalElement.textContent = `$${data.item_total.toFixed(2)}`);
+            const qty = Number(quantity) || 1;
+            const unit = (data.item_total / qty).toFixed(2);
+            quantityElement && (quantityElement.textContent = `${qty} × $${unit}`);
         }
     })
     .catch(error => console.error('Error:', error));
 
     return false;
-}
-
-function updateOverallTotal() {
-    // This would normally fetch the updated total from the server
-    // For now, just reload the page to show updated totals
-    setTimeout(() => location.reload(), 500);
 }
 </script>
 {% endblock %}
