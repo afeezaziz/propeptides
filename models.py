@@ -78,6 +78,12 @@ class Product(db.Model):
     status = db.Column(db.String(20), default='active')  # active, inactive, out_of_stock
     meta_title = db.Column(db.String(200))
     meta_description = db.Column(db.Text)
+    # Quality & compliance fields
+    coa_url = db.Column(db.String(300))
+    hplc_image = db.Column(db.String(300))
+    ms_image = db.Column(db.String(300))
+    last_tested_at = db.Column(db.DateTime)
+    lot_number = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -260,7 +266,7 @@ class CommunityTag(db.Model):
 
 class SearchDocument(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    kind = db.Column(db.String(20), nullable=False)  # 'product' or 'post'
+    kind = db.Column(db.String(20), nullable=False)  # 'product' | 'post' | 'community'
     ref_id = db.Column(db.Integer, nullable=False)
     title = db.Column(db.String(255), nullable=False)
     slug = db.Column(db.String(255), nullable=False)

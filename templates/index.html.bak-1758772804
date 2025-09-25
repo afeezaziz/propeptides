@@ -30,15 +30,7 @@
                         <a href="{{ url_for('posts') }}" class="bg-white/10 hover:bg-white/20 text-white px-10 py-4 rounded-xl font-semibold transition-all duration-300 backdrop-blur-sm border border-white/20 hover:border-white/40">
                             Research Library
                         </a>
-                                            <a href="{{ url_for('assistant') }}" class="bg-white text-brand-700 hover:text-brand-800 px-10 py-4 rounded-xl font-semibold transition-all duration-300 border border-white/20 hover:border-white/40 shadow-lg">
-                            Ask Research Assistant
-                        </a>
-</div>
-                    <p class="text-[12px] text-white/80 mb-4">For Research Use Only. Not for human consumption. The Assistant provides research information only.</p>
-                    <div class="text-white/80 text-sm mb-8">
-                        <span class="font-medium">99%+ Purity</span> • <span class="font-medium">ISO Certified</span> • <span class="font-medium">COA Per Batch</span>
                     </div>
-
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl mx-auto lg:mx-0">
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center">
@@ -125,18 +117,6 @@
                         <div class="absolute top-4 right-4">
                             <span class="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-lg">IN STOCK</span>
                         </div>
-                        <div class="absolute top-16 right-4 flex flex-col gap-2">
-                            <button type="button" class="btn btn-circle btn-sm bg-white/90 hover:bg-white text-gray-700" data-action="wishlist" aria-label="Add to wishlist">
-                                <i data-lucide="heart" class="w-4 h-4"></i>
-                            </button>
-                            <button type="button" class="btn btn-circle btn-sm bg-white/90 hover:bg-white text-gray-700" data-action="compare" aria-label="Add to compare">
-                                <i data-lucide="git-compare" class="w-4 h-4"></i>
-                            </button>
-                            <button type="button" class="btn btn-circle btn-sm bg-brand-600 hover:bg-brand-700 text-white" data-action="quick-add" aria-label="Quick add to cart">
-                                <i data-lucide="plus" class="w-4 h-4"></i>
-                            </button>
-                        </div>
-
                     </div>
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-3">
@@ -163,13 +143,7 @@
                                 <div class="text-xs text-gray-500">HPLC Tested</div>
                             </div>
                         </div>
-                        
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="badge badge-sm badge-outline">COA</span>
-                            <span class="badge badge-sm badge-outline">HPLC</span>
-                            <span class="badge badge-sm badge-outline">MS</span>
-                        </div>
-<a href="{{ url_for('peptides') }}" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 block text-center shadow-lg hover:shadow-brand-600/25">
+                        <a href="{{ url_for('peptides') }}" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 block text-center shadow-lg hover:shadow-brand-600/25">
                             View Details
                         </a>
                     </div>
@@ -185,18 +159,6 @@
                         <div class="absolute top-4 right-4">
                             <span class="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-lg">IN STOCK</span>
                         </div>
-                        <div class="absolute top-16 right-4 flex flex-col gap-2">
-                            <button type="button" class="btn btn-circle btn-sm bg-white/90 hover:bg-white text-gray-700" data-action="wishlist" aria-label="Add to wishlist">
-                                <i data-lucide="heart" class="w-4 h-4"></i>
-                            </button>
-                            <button type="button" class="btn btn-circle btn-sm bg-white/90 hover:bg-white text-gray-700" data-action="compare" aria-label="Add to compare">
-                                <i data-lucide="git-compare" class="w-4 h-4"></i>
-                            </button>
-                            <button type="button" class="btn btn-circle btn-sm bg-brand-600 hover:bg-brand-700 text-white" data-action="quick-add" aria-label="Quick add to cart">
-                                <i data-lucide="plus" class="w-4 h-4"></i>
-                            </button>
-                        </div>
-
                     </div>
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-3">
@@ -223,13 +185,7 @@
                                 <div class="text-xs text-gray-500">MS Verified</div>
                             </div>
                         </div>
-                        
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="badge badge-sm badge-outline">COA</span>
-                            <span class="badge badge-sm badge-outline">HPLC</span>
-                            <span class="badge badge-sm badge-outline">MS</span>
-                        </div>
-<a href="{{ url_for('peptides') }}" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 block text-center shadow-lg hover:shadow-purple-600/25">
+                        <a href="{{ url_for('peptides') }}" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 block text-center shadow-lg hover:shadow-purple-600/25">
                             View Details
                         </a>
                     </div>
@@ -245,18 +201,6 @@
                         <div class="absolute top-4 right-4">
                             <span class="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-lg">IN STOCK</span>
                         </div>
-                        <div class="absolute top-16 right-4 flex flex-col gap-2">
-                            <button type="button" class="btn btn-circle btn-sm bg-white/90 hover:bg-white text-gray-700" data-action="wishlist" aria-label="Add to wishlist">
-                                <i data-lucide="heart" class="w-4 h-4"></i>
-                            </button>
-                            <button type="button" class="btn btn-circle btn-sm bg-white/90 hover:bg-white text-gray-700" data-action="compare" aria-label="Add to compare">
-                                <i data-lucide="git-compare" class="w-4 h-4"></i>
-                            </button>
-                            <button type="button" class="btn btn-circle btn-sm bg-brand-600 hover:bg-brand-700 text-white" data-action="quick-add" aria-label="Quick add to cart">
-                                <i data-lucide="plus" class="w-4 h-4"></i>
-                            </button>
-                        </div>
-
                     </div>
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-3">
@@ -283,13 +227,7 @@
                                 <div class="text-xs text-gray-500">Lab Tested</div>
                             </div>
                         </div>
-                        
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="badge badge-sm badge-outline">COA</span>
-                            <span class="badge badge-sm badge-outline">HPLC</span>
-                            <span class="badge badge-sm badge-outline">MS</span>
-                        </div>
-<a href="{{ url_for('peptides') }}" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 block text-center shadow-lg hover:shadow-green-600/25">
+                        <a href="{{ url_for('peptides') }}" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 block text-center shadow-lg hover:shadow-green-600/25">
                             View Details
                         </a>
                     </div>
@@ -305,18 +243,6 @@
                         <div class="absolute top-4 right-4">
                             <span class="bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-lg">LIMITED</span>
                         </div>
-                        <div class="absolute top-16 right-4 flex flex-col gap-2">
-                            <button type="button" class="btn btn-circle btn-sm bg-white/90 hover:bg-white text-gray-700" data-action="wishlist" aria-label="Add to wishlist">
-                                <i data-lucide="heart" class="w-4 h-4"></i>
-                            </button>
-                            <button type="button" class="btn btn-circle btn-sm bg-white/90 hover:bg-white text-gray-700" data-action="compare" aria-label="Add to compare">
-                                <i data-lucide="git-compare" class="w-4 h-4"></i>
-                            </button>
-                            <button type="button" class="btn btn-circle btn-sm bg-brand-600 hover:bg-brand-700 text-white" data-action="quick-add" aria-label="Quick add to cart">
-                                <i data-lucide="plus" class="w-4 h-4"></i>
-                            </button>
-                        </div>
-
                     </div>
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-3">
@@ -343,13 +269,7 @@
                                 <div class="text-xs text-gray-500">MS Verified</div>
                             </div>
                         </div>
-                        
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="badge badge-sm badge-outline">COA</span>
-                            <span class="badge badge-sm badge-outline">HPLC</span>
-                            <span class="badge badge-sm badge-outline">MS</span>
-                        </div>
-<a href="{{ url_for('peptides') }}" class="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 block text-center shadow-lg hover:shadow-orange-600/25">
+                        <a href="{{ url_for('peptides') }}" class="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 block text-center shadow-lg hover:shadow-orange-600/25">
                             View Details
                         </a>
                     </div>

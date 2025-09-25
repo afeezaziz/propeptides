@@ -1,0 +1,45 @@
+/* Propeptides custom DaisyUI theme and small overrides */
+
+/* DaisyUI uses HSL variables. These values tune the brand to a clean lab-tech aesthetic. */
+[data-theme="propeptides"] {
+  color-scheme: light;
+
+  /* Brand tokens */
+  --p: 199 89% 48%;      /* primary: clean cyan */
+  --pf: 199 89% 40%;     /* primary-focus */
+  --pc: 0 0% 100%;       /* primary-content */
+
+  --s: 145 63% 46%;      /* secondary: precision lime */
+  --sf: 145 63% 38%;
+  --sc: 0 0% 100%;
+
+  --a: 259 94% 51%;      /* accent: vibrant violet for badges */
+  --af: 259 94% 43%;
+  --ac: 0 0% 100%;
+
+  /* Neutral and base */
+  --n: 222 47% 11%;
+  --nc: 210 40% 98%;
+
+  --b1: 210 40% 98%;
+  --b2: 214 32% 91%;
+  --b3: 216 18% 83%;
+  --bc: 222 47% 11%;
+
+  /* States */
+  --in: 198 93% 60%;
+  --su: 158 64% 52%;
+  --wa: 43 96% 56%;
+  --er: 0 84% 60%;
+
+  /* Radius and animation */
+  --rounded-box: 1rem;
+  --rounded-btn: 0.75rem;
+  --rounded-badge: 1rem;
+  --animation-btn: 0.15s;
+}
+
+/* Set the default font to Inter for non-Tailwind-rendered content paths */
+html {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}

@@ -16,7 +16,7 @@
     </nav>
 
     <div class="container mx-auto px-4 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12" data-product-id="{{ product.id }}">
             <!-- Product Images -->
             <div class="space-y-4">
                 {% if product.featured_image %}
@@ -32,6 +32,17 @@
                         </button>
                     </form>
                     {% endif %}
+                    <!-- Quick actions -->
+                    <div class="absolute top-3 right-14 flex flex-col gap-2">
+                        <button type="button" class="btn btn-circle btn-xs bg-white/90 hover:bg-white text-gray-700" data-action="compare" data-product-id="{{ product.id }}" aria-label="Add to compare">
+                            <i data-lucide="git-compare" class="w-3.5 h-3.5"></i>
+                        </button>
+                        {% if current_user.is_authenticated and product.is_in_stock() %}
+                        <button type="button" class="btn btn-circle btn-xs bg-brand-600 hover:bg-brand-700 text-white" data-action="quick-add" aria-label="Quick add to cart">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                        </button>
+                        {% endif %}
+                    </div>
                 </div>
                 {% else %}
                 <div class="bg-white rounded-lg h-96 flex items-center justify-center relative">
@@ -48,6 +59,17 @@
                         </button>
                     </form>
                     {% endif %}
+                    <!-- Quick actions -->
+                    <div class="absolute top-3 right-14 flex flex-col gap-2">
+                        <button type="button" class="btn btn-circle btn-xs bg-white/90 hover:bg-white text-gray-700" data-action="compare" data-product-id="{{ product.id }}" aria-label="Add to compare">
+                            <i data-lucide="git-compare" class="w-3.5 h-3.5"></i>
+                        </button>
+                        {% if current_user.is_authenticated and product.is_in_stock() %}
+                        <button type="button" class="btn btn-circle btn-xs bg-brand-600 hover:bg-brand-700 text-white" data-action="quick-add" aria-label="Quick add to cart">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                        </button>
+                        {% endif %}
+                    </div>
                 </div>
                 {% endif %}
 
@@ -144,7 +166,7 @@
 
                 <!-- Add to Cart Form -->
                 {% if current_user.is_authenticated and product.is_in_stock() %}
-                <form method="POST" action="{{ url_for('add_to_cart') }}" class="space-y-4" data-ajax="add-to-cart">
+                <form id="pdp-atc-form" method="POST" action="{{ url_for('add_to_cart') }}" class="space-y-4" data-ajax="add-to-cart">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="product_id" value="{{ product.id }}">
 
@@ -186,6 +208,35 @@
                     </div>
                 </div>
                 {% endif %}
+
+                <!-- Quality & Testing -->
+                <div class="bg-white rounded-lg p-4 space-y-3">
+                    <h3 class="font-semibold text-gray-900">Quality & Testing</h3>
+                    <div class="flex flex-wrap gap-2">
+                        {% if product.coa_url %}<span class="badge badge-sm badge-outline">COA</span>{% endif %}
+                        {% if product.hplc_image %}<span class="badge badge-sm badge-outline">HPLC</span>{% endif %}
+                        {% if product.ms_image %}<span class="badge badge-sm badge-outline">MS</span>{% endif %}
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        {% if product.coa_url %}
+                        <button type="button" class="btn btn-sm" data-open-modal="#coa-modal">View COA</button>
+                        {% endif %}
+                        {% if product.hplc_image %}
+                        <button type="button" class="btn btn-sm" data-open-image="{{ product.hplc_image }}">View HPLC</button>
+                        {% endif %}
+                        {% if product.ms_image %}
+                        <button type="button" class="btn btn-sm" data-open-image="{{ product.ms_image }}">View MS</button>
+                        {% endif %}
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        {% if product.last_tested_at %}
+                        <div>Last tested: {{ product.last_tested_at.strftime('%b %d, %Y') }}</div>
+                        {% endif %}
+                        {% if product.lot_number %}
+                        <div>Lot: {{ product.lot_number }}</div>
+                        {% endif %}
+                    </div>
+                </div>
 
                 <!-- Product Features -->
                 <div class="bg-white rounded-lg p-4 space-y-3">
@@ -290,4 +341,50 @@ function changeImage(imageUrl) {
     document.getElementById('main-image').src = imageUrl;
 }
 </script>
+
+<!-- COA Modal -->
+{% if product.coa_url %}
+<dialog id="coa-modal" class="modal">
+  <div class="modal-box w-11/12 max-w-5xl">
+    <h3 class="font-bold text-lg mb-3">Certificate of Analysis</h3>
+    <div class="h-[70vh]">
+      <iframe src="{{ product.coa_url }}" class="w-full h-full" title="COA Document"></iframe>
+    </div>
+    <div class="modal-action">
+      <form method="dialog">
+        <button class="btn">Close</button>
+      </form>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+  </dialog>
+{% endif %}
+
+<!-- Image Modal -->
+<dialog id="img-modal" class="modal">
+  <div class="modal-box w-11/12 max-w-3xl">
+    <img id="img-modal-src" src="" alt="Quality Image" class="w-full h-auto" />
+    <div class="modal-action">
+      <form method="dialog"><button class="btn">Close</button></form>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>
+
+<!-- Sticky Add to Cart -->
+{% if current_user.is_authenticated and product.is_in_stock() %}
+<div id="sticky-atc" class="fixed bottom-4 inset-x-4 bg-white/95 backdrop-blur border border-gray-200 shadow-xl rounded-2xl px-4 py-3 flex items-center justify-between z-40 hidden">
+  <div class="flex items-center gap-3">
+    <div class="font-semibold text-gray-900 truncate max-w-[45vw]">{{ product.name }}</div>
+    <div class="text-brand-600 font-bold">${{ "%.2f"|format(product.sale_price if product.sale_price is not none else product.price) }}</div>
+  </div>
+  <button type="button" class="btn btn-sm btn-primary" onclick="(function(){ var f=document.getElementById('pdp-atc-form'); if(f){ f.dispatchEvent(new Event('submit', {cancelable:true, bubbles:true})); } })()">
+    Add to Cart
+  </button>
+</div>
+{% endif %}
 {% endblock %}

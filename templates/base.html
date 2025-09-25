@@ -1,16 +1,38 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="propeptides">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Propeptides{% endblock %}</title>
+    <!-- Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <!-- Custom theme variables -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: [
+                            'Inter',
+                            'ui-sans-serif',
+                            'system-ui',
+                            '-apple-system',
+                            'Segoe UI',
+                            'Roboto',
+                            'Helvetica Neue',
+                            'Arial',
+                            'Noto Sans',
+                            'Apple Color Emoji',
+                            'Segoe UI Emoji',
+                            'Segoe UI Symbol'
+                        ],
+                    },
                     colors: {
                         'brand': {
                             50: '#eff6ff',
@@ -97,7 +119,7 @@
                     </a>
                 </div>
 
-                <!-- Desktop Navigation -->
+                <!-- Desktop Navigation -->@@
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="{{ url_for('peptides') }}" class="font-medium transition-colors {{ 'text-brand-700' if request.endpoint in ['peptides', 'peptide_detail'] else 'text-gray-700 hover:text-brand-600' }}" {% if request.endpoint in ['peptides', 'peptide_detail'] %}aria-current="page"{% endif %}>Peptides</a>
                     <a href="{{ url_for('posts') }}" class="font-medium transition-colors {{ 'text-brand-700' if request.endpoint in ['posts', 'post_detail'] else 'text-gray-700 hover:text-brand-600' }}" {% if request.endpoint in ['posts', 'post_detail'] %}aria-current="page"{% endif %}>Blog</a>
@@ -106,6 +128,21 @@
                     <a href="{{ url_for('assistant') }}" class="font-medium transition-colors {{ 'text-brand-700' if request.endpoint == 'assistant' else 'text-gray-700 hover:text-brand-600' }}" {% if request.endpoint == 'assistant' %}aria-current="page"{% endif %}>Assistant</a>
                     <a href="{{ url_for('calculator') }}" class="font-medium transition-colors {{ 'text-brand-700' if request.endpoint == 'calculator' else 'text-gray-700 hover:text-brand-600' }}" {% if request.endpoint == 'calculator' %}aria-current="page"{% endif %}>Calculator</a>
                     <a href="{{ url_for('tracker') }}" class="font-medium transition-colors {{ 'text-brand-700' if request.endpoint in ['tracker', 'log_dosage', 'add_progress'] else 'text-gray-700 hover:text-brand-600' }}" {% if request.endpoint in ['tracker', 'log_dosage', 'add_progress'] %}aria-current="page"{% endif %}>Tracker</a>
+                    <form id="nav-search-form" action="{{ url_for('search') }}" method="get" class="hidden lg:flex items-center space-x-2 ml-2">
+                        <div class="relative">
+                            <input type="text" name="q" value="{{ request.args.get('q', '') if request.endpoint == 'search' else '' }}" placeholder="Search research..." class="input input-sm input-bordered w-56 xl:w-64 pr-8" aria-label="Search">
+                            <button type="submit" class="absolute right-1 top-1.5 text-gray-500 hover:text-brand-600" aria-label="Submit search">
+                                <i data-lucide="search" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        <input type="hidden" name="type" id="nav-search-type" value="{{ request.args.get('type', 'all') if request.endpoint == 'search' else 'all' }}">
+                        <div class="join join-horizontal">
+                            <button type="button" class="btn btn-xs btn-ghost join-item" data-type="all">All</button>
+                            <button type="button" class="btn btn-xs btn-ghost join-item" data-type="product">Peptides</button>
+                            <button type="button" class="btn btn-xs btn-ghost join-item" data-type="post">Blog</button>
+                            <button type="button" class="btn btn-xs btn-ghost join-item" data-type="community">Community</button>
+                        </div>
+                    </form>
                 </div>
 
                 <!-- Desktop CTA -->
@@ -395,6 +432,99 @@
         // Initialize Lucide icons
         lucide.createIcons();
 
+        // Generic modal/image openers (COA and quality images)
+        document.addEventListener('click', function(e){
+            const openModalBtn = e.target.closest && e.target.closest('[data-open-modal]');
+            if (openModalBtn) {
+                const sel = openModalBtn.getAttribute('data-open-modal');
+                if (sel) {
+                    const dlg = document.querySelector(sel);
+                    if (dlg && dlg.showModal) dlg.showModal();
+                }
+            }
+            const openImgBtn = e.target.closest && e.target.closest('[data-open-image]');
+            if (openImgBtn) {
+                const src = openImgBtn.getAttribute('data-open-image');
+                const dlg = document.getElementById('img-modal');
+                const img = document.getElementById('img-modal-src');
+                if (dlg && img) { img.src = src || ''; if (dlg.showModal) dlg.showModal(); }
+            }
+        });
+
+        // Sticky ATC visibility on PDP
+        (function(){
+            const atcForm = document.getElementById('pdp-atc-form');
+            const sticky = document.getElementById('sticky-atc');
+            if (!atcForm || !sticky || !('IntersectionObserver' in window)) return;
+            try {
+                const io = new IntersectionObserver((entries) => {
+                    entries.forEach((en) => {
+                        if (en.isIntersecting) sticky.classList.add('hidden');
+                        else sticky.classList.remove('hidden');
+                    });
+                }, { threshold: 0.05 });
+                io.observe(atcForm);
+            } catch (err) {}
+        })();
+
+        // Nav search type chips (Desktop)
+        (function () {
+            const form = document.getElementById('nav-search-form');
+            if (!form) return;
+            const hidden = document.getElementById('nav-search-type');
+            const buttons = form.querySelectorAll('button[data-type]');
+            function syncActive() {
+                buttons.forEach((b) => {
+                    if (!hidden) return;
+                    if (b.dataset.type === (hidden.value || 'all')) b.classList.add('btn-active');
+                    else b.classList.remove('btn-active');
+                });
+            }
+            buttons.forEach((b) => {
+                b.addEventListener('click', () => {
+                    if (hidden) hidden.value = b.dataset.type || 'all';
+                    syncActive();
+                    form.submit();
+                });
+            });
+            syncActive();
+        })();
+
+        // Quick action buttons on product cards (real wiring)
+        document.addEventListener('click', function (e) {
+            const target = e.target;
+            if (!target) return;
+            const btn = target.closest ? target.closest('button[data-action]') : null;
+            if (!btn) return;
+            const action = btn.dataset.action;
+            const card = btn.closest('[data-product-id]') || document;
+            if (action === 'wishlist') {
+                const wishForm = card.querySelector('form[data-ajax="toggle-favorite"]');
+                if (wishForm) {
+                    wishForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+                } else {
+                    showToast('Wishlist not available here', 'error');
+                }
+            } else if (action === 'compare') {
+                const pid = btn.dataset.productId || (card.getAttribute('data-product-id') || '').trim();
+                if (!pid) { showToast('Missing product id', 'error'); return; }
+                try {
+                    const key = 'compare_ids';
+                    const arr = JSON.parse(localStorage.getItem(key) || '[]');
+                    if (!arr.includes(pid)) arr.push(pid);
+                    localStorage.setItem(key, JSON.stringify(arr));
+                    showToast(`Added to compare (${arr.length})`);
+                } catch (err) { showToast('Compare not available', 'error'); }
+            } else if (action === 'quick-add') {
+                const addForm = card.querySelector('form[data-ajax="add-to-cart"]');
+                if (addForm) {
+                    addForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+                } else {
+                    showToast('Add to cart not available', 'error');
+                }
+            }
+        });
+
         // Toast helper
         function showToast(message, type = 'success') {
             const root = document.getElementById('toast-root') || (function(){
@@ -448,6 +578,8 @@
                     if (data && data.success) {
                         updateCartCount(data.cart_count);
                         showToast('Added to cart');
+                        try { if (window.gtag) gtag('event', 'add_to_cart'); } catch (e) {}
+                        try { if (window.fbq) fbq('track', 'AddToCart'); } catch (e) {}
                     } else {
                         showToast('Could not add to cart', 'error');
                     }
@@ -489,6 +621,8 @@
                             }
                         }
                     }
+                    try { if (window.gtag) gtag('event', data.favorited ? 'add_to_wishlist' : 'remove_from_wishlist'); } catch (e) {}
+                    try { if (window.fbq) fbq('trackCustom', data.favorited ? 'AddToWishlist' : 'RemoveFromWishlist'); } catch (e) {}
                     showToast(data.favorited ? 'Added to wishlist' : 'Removed from wishlist');
                 })
                 .catch(() => showToast('Error updating wishlist', 'error'));
@@ -514,6 +648,8 @@
                         return;
                     }
                     showToast('We will notify you when back in stock');
+                    try { if (window.gtag) gtag('event', 'generate_lead', { method: 'stock_alert' }); } catch (e) {}
+                    try { if (window.fbq) fbq('trackCustom', 'StockAlertSubscribe'); } catch (e) {}
                     const btn = form.querySelector('button[type="submit"]');
                     if (btn) {
                         btn.disabled = true;

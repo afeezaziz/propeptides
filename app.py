@@ -355,7 +355,7 @@ def get_relevant_content(query_text: str, top_n: int = 3):
     return top_products, top_posts
 
 def upsert_search_documents(limit: int | None = None):
-    """Ensure SearchDocument rows exist with embeddings for active products and published posts."""
+    """Ensure SearchDocument rows exist with embeddings for active products, published posts, and community posts."""
     if not (OpenAI and os.getenv('OPENAI_API_KEY') and db.engine.dialect.name in ('postgresql', 'postgres')):
         return 0
     client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -380,9 +380,11 @@ def upsert_search_documents(limit: int | None = None):
     count = 0
     products = Product.query.filter_by(status='active').all()
     posts = Post.query.filter_by(status='published').all()
+    cposts = CommunityPost.query.filter_by(status='published').all()
     if limit:
         products = products[:limit]
         posts = posts[:limit]
+        cposts = cposts[:limit]
 
     for p in products:
         body = f"{p.name}\n{p.short_description or ''}\n{p.description or ''}"
@@ -391,6 +393,10 @@ def upsert_search_documents(limit: int | None = None):
     for post in posts:
         body = f"{post.title}\n{post.excerpt or ''}\n{post.content or ''}"
         ensure('post', post.id, post.title, post.slug, body)
+        count += 1
+    for cp in cposts:
+        body = f"{cp.title}\n{cp.content or ''}"
+        ensure('community', cp.id, cp.title, cp.slug, body)
         count += 1
     db.session.commit()
     return count
@@ -414,6 +420,12 @@ def upsert_single_document(kind: str, ref_id: int):
             return False
         title, slug = post.title, post.slug
         body = f"{post.title}\n{post.excerpt or ''}\n{post.content or ''}"
+    elif kind == 'community':
+        cp = CommunityPost.query.get(ref_id)
+        if not cp or cp.status != 'published':
+            return False
+        title, slug = cp.title, cp.slug
+        body = f"{cp.title}\n{cp.content or ''}"
     else:
         return False
 
@@ -587,7 +599,8 @@ if os.getenv('AUTO_EMBED', 'true').lower() == 'true':
     @event.listens_for(db.session, 'after_flush')
     def _collect_changed_objects(session, flush_context):
         ids = session.info.setdefault('auto_embed_ids', {
-            'product': set(), 'post': set(), 'delete_product': set(), 'delete_post': set()
+            'product': set(), 'post': set(), 'community': set(),
+            'delete_product': set(), 'delete_post': set(), 'delete_community': set()
         })
         for obj in session.new.union(session.dirty):
             try:
@@ -595,6 +608,8 @@ if os.getenv('AUTO_EMBED', 'true').lower() == 'true':
                     ids['product'].add(obj.id)
                 elif isinstance(obj, Post) and obj.id:
                     ids['post'].add(obj.id)
+                elif isinstance(obj, CommunityPost) and obj.id:
+                    ids['community'].add(obj.id)
             except Exception:
                 continue
         for obj in session.deleted:
@@ -603,6 +618,8 @@ if os.getenv('AUTO_EMBED', 'true').lower() == 'true':
                     ids['delete_product'].add(obj.id)
                 elif isinstance(obj, Post) and obj.id:
                     ids['delete_post'].add(obj.id)
+                elif isinstance(obj, CommunityPost) and obj.id:
+                    ids['delete_community'].add(obj.id)
             except Exception:
                 continue
 
@@ -616,6 +633,8 @@ if os.getenv('AUTO_EMBED', 'true').lower() == 'true':
                 upsert_single_document('product', pid)
             for tid in ids.get('post', []):
                 upsert_single_document('post', tid)
+            for cid in ids.get('community', []):
+                upsert_single_document('community', cid)
             # Deletes
             delp = list(ids.get('delete_product', []) or [])
             if delp:
@@ -627,7 +646,12 @@ if os.getenv('AUTO_EMBED', 'true').lower() == 'true':
                 SearchDocument.query.filter(
                     SearchDocument.kind == 'post', SearchDocument.ref_id.in_(delt)
                 ).delete(synchronize_session=False)
-            if delp or delt:
+            delc = list(ids.get('delete_community', []) or [])
+            if delc:
+                SearchDocument.query.filter(
+                    SearchDocument.kind == 'community', SearchDocument.ref_id.in_(delc)
+                ).delete(synchronize_session=False)
+            if delp or delt or delc:
                 db.session.commit()
         except Exception:
             pass
@@ -653,7 +677,7 @@ def _vector_search_documents(query_text: str, limit: int = 30):
 @app.route('/search')
 def search():
     q = request.args.get('q', '', type=str).strip()
-    type_filter = request.args.get('type', 'all')  # all | product | post
+    type_filter = request.args.get('type', 'all')  # all | product | post | community
     category_slug = request.args.get('category', None, type=str)
     min_price = request.args.get('min_price', None, type=float)
     max_price = request.args.get('max_price', None, type=float)
@@ -667,7 +691,7 @@ def search():
         selected_category = Category.query.filter_by(slug=category_slug).first()
 
     results = []
-    counts = {'product': 0, 'post': 0}
+    counts = {'product': 0, 'post': 0, 'community': 0}
 
     def product_passes_filters(p: Product) -> bool:
         if selected_category and p.category_id != selected_category.id:
@@ -725,6 +749,23 @@ def search():
                         'id': post.id,
                     })
                     counts['post'] += 1
+            # rank community posts
+            for cpost in CommunityPost.query.filter_by(status='published').all():
+                if type_filter not in ('all', 'community'):
+                    continue
+                txt = f"{cpost.title} {cpost.content or ''}"
+                score = calculate_similarity(kw, extract_keywords(txt))
+                if score > 0:
+                    results.append({
+                        'kind': 'community',
+                        'title': cpost.title,
+                        'url': url_for('community_detail', slug=cpost.slug),
+                        'score': score,
+                        'snippet': (cpost.content or '')[:200],
+                        'created_at': cpost.created_at,
+                        'id': cpost.id,
+                    })
+                    counts['community'] += 1
             # Default relevance order: score desc
             results.sort(key=lambda r: r.get('score') or 0, reverse=True)
         else:
@@ -760,6 +801,19 @@ def search():
                             'id': post.id,
                         })
                         counts['post'] += 1
+                elif d.kind == 'community' and type_filter in ('all', 'community'):
+                    cp = CommunityPost.query.filter_by(id=d.ref_id, status='published').first()
+                    if cp:
+                        results.append({
+                            'kind': 'community',
+                            'title': cp.title,
+                            'url': url_for('community_detail', slug=cp.slug),
+                            'score': None,
+                            'snippet': (cp.content or '')[:200],
+                            'created_at': cp.created_at,
+                            'id': cp.id,
+                        })
+                        counts['community'] += 1
 
         # Apply sorting if not relevance (which is default order for vector, and score order for keyword)
         if sort == 'price_low':

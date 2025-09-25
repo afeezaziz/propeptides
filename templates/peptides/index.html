@@ -100,7 +100,7 @@
         {% else %}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {% for product in products.items %}
-            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow group">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow group" data-product-id="{{ product.id }}">
                 {% if product.featured_image %}
                 <div class="relative">
                     <img src="{{ product.featured_image }}" alt="{{ product.name }}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
@@ -125,6 +125,17 @@
                         </button>
                     </form>
                     {% endif %}
+                    <!-- Quick actions -->
+                    <div class="absolute top-2 right-12 flex flex-col gap-2">
+                        <button type="button" class="btn btn-circle btn-xs bg-white/90 hover:bg-white text-gray-700" data-action="compare" data-product-id="{{ product.id }}" aria-label="Add to compare">
+                            <i data-lucide="git-compare" class="w-3.5 h-3.5"></i>
+                        </button>
+                        {% if current_user.is_authenticated and product.is_in_stock() %}
+                        <button type="button" class="btn btn-circle btn-xs bg-brand-600 hover:bg-brand-700 text-white" data-action="quick-add" aria-label="Quick add to cart">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                        </button>
+                        {% endif %}
+                    </div>
                 </div>
                 {% else %}
                 <div class="w-full h-48 bg-gradient-to-r from-brand-500 to-blue-600 flex items-center justify-center relative">
@@ -139,6 +150,17 @@
                         </button>
                     </form>
                     {% endif %}
+                    <!-- Quick actions -->
+                    <div class="absolute top-2 right-12 flex flex-col gap-2">
+                        <button type="button" class="btn btn-circle btn-xs bg-white/90 hover:bg-white text-gray-700" data-action="compare" data-product-id="{{ product.id }}" aria-label="Add to compare">
+                            <i data-lucide="git-compare" class="w-3.5 h-3.5"></i>
+                        </button>
+                        {% if current_user.is_authenticated and product.is_in_stock() %}
+                        <button type="button" class="btn btn-circle btn-xs bg-brand-600 hover:bg-brand-700 text-white" data-action="quick-add" aria-label="Quick add to cart">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                        </button>
+                        {% endif %}
+                    </div>
                 </div>
                 {% endif %}
 
